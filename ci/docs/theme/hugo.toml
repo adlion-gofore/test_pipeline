@@ -1,0 +1,20 @@
+baseURL = "https://avant-tecno-oy-uds-library.pages.avant-tecno-oy.ghe.com/"
+languageCode = "en-us"
+title = "Avant UDS Library"
+
+publishDir = "../../../_site"
+
+[markup.highlight]
+  noClasses = false
+
+[module]
+  [[module.imports]]
+    path = "gitlab.com/natitec_public/bora"
+
+  [[module.mounts]]
+    source = "static"
+    target = "static"
+
+  [[module.mounts]]
+    source = "../../../docs"
+    target = "content/docs"

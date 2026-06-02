@@ -1,0 +1,10 @@
+{
+ "compilerOptions": {
+  "baseUrl": ".",
+  "paths": {
+   "*": [
+    "../../../../../../../.cache/hugo_cache/modules/filecache/modules/pkg/mod/gitlab.com/natitec_public/bora@v0.0.0-20250909090000-5e5e1b18ec85/assets/*"
+   ]
+  }
+ }
+}

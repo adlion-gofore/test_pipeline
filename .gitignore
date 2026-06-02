@@ -1,0 +1,9 @@
+# Hugo build output
+_site/
+
+# Hugo internals
+ci/docs/theme/resources/
+ci/docs/theme/.hugo_build.lock
+
+# Rust (future)
+target/
