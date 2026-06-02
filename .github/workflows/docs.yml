@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag to deploy (e.g. v0.1.0)'
+        required: true
 
 permissions:
   contents: write
@@ -36,7 +40,9 @@ jobs:
 
       - name: Prepare versioned docs
         run: |
-          TAG=${GITHUB_REF_NAME}
+          TAG=${{ github.ref_name }}
+          if [ "$TAG" = "" ]; then TAG=${{ github.event.inputs.tag }}; fi
+          echo "TAG=$TAG" >> $GITHUB_ENV
           cp -r docs/next docs/$TAG
           rm -rf docs/next
 
@@ -46,9 +52,40 @@ jobs:
         env:
           HUGO_CACHEDIR: /tmp/hugo_cache
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
-          keep_files: true
+      - name: Checkout gh-pages and update versions.json
+        run: |
+          git fetch origin gh-pages 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git worktree add /tmp/gh-pages origin/gh-pages
+          else
+            git worktree add --orphan -b gh-pages /tmp/gh-pages
+          fi
+
+          VERSIONS_FILE=/tmp/gh-pages/versions.json
+          if [ -f "$VERSIONS_FILE" ]; then
+            # prepend new version, mark previous as not latest
+            NEW=$(cat "$VERSIONS_FILE" | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          for v in data.get('versions', []):
+              v['latest'] = False
+          data['versions'].insert(0, {'name': '${{ env.TAG }}', 'path': '/${{ env.TAG }}/', 'latest': True})
+          print(json.dumps(data, indent=2))
+          ")
+          else
+            NEW=$(python3 -c "
+          import json
+          data = {'versions': [{'name': '${{ env.TAG }}', 'path': '/${{ env.TAG }}/', 'latest': True}]}
+          print(json.dumps(data, indent=2))
+          ")
+          fi
+
+          echo "$NEW" > "$VERSIONS_FILE"
+          cp -r _site/. /tmp/gh-pages/${{ env.TAG }}/
+
+          cd /tmp/gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "docs: deploy ${{ env.TAG }}"
+          git push origin gh-pages
