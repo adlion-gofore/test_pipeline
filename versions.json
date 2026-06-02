@@ -1,6 +1,20 @@
 {
   "versions": [
     {
+      "id": "v0.0.3",
+      "label": "v0.0.3",
+      "languages": [
+        {
+          "code": "en",
+          "default": true,
+          "label": "EN",
+          "path": "/test_pipeline/docs/v0.0.3/en/"
+        }
+      ],
+      "latest": true,
+      "path": "/test_pipeline/docs/v0.0.3/"
+    },
+    {
       "id": "v0.0.1",
       "label": "v0.0.1",
       "languages": [
@@ -11,7 +25,7 @@
           "path": "/test_pipeline/docs/v0.0.1/en/"
         }
       ],
-      "latest": true,
+      "latest": false,
       "path": "/test_pipeline/docs/v0.0.1/"
     },
     {
