@@ -15,6 +15,20 @@
       "path": "/test_pipeline/docs/v0.0.1/"
     },
     {
+      "id": "v0.0.1",
+      "label": "v0.0.1",
+      "languages": [
+        {
+          "code": "en",
+          "default": true,
+          "label": "EN",
+          "path": "/test_pipeline/docs/v0.0.1/en/"
+        }
+      ],
+      "latest": false,
+      "path": "/test_pipeline/docs/v0.0.1/"
+    },
+    {
       "name": "v0.0.1",
       "path": "/v0.0.1/",
       "latest": false
