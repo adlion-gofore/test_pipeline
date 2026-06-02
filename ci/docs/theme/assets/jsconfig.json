@@ -3,7 +3,7 @@
   "baseUrl": ".",
   "paths": {
    "*": [
-    "../../../../../../../.cache/hugo_cache/modules/filecache/modules/pkg/mod/gitlab.com/natitec_public/bora@v0.0.0-20250909190000-9cc55cc87303/assets/*"
+    "../../../../../../../.cache/hugo_cache/modules/filecache/modules/pkg/mod/gitlab.com/natitec_public/bora@v0.0.0-20250910080000-45971b308a90/assets/*"
    ]
   }
  }
