@@ -1,0 +1,63 @@
+{{- $site           := .site -}}
+{{- $currentVersion := .version -}}
+{{- $currentLang    := .lang -}}
+
+<header class="topbar">
+
+  {{/* ── Left: logo ───────────────────────────────────────────── */}}
+  <div class="topbar__left">
+    <a href="/" class="topbar__logo" aria-label="{{ $site.title }}">
+      {{- $logo := $site.logo -}}
+      {{- if os.FileExists (printf "static%s" $logo) -}}
+        <img src="{{ $logo }}" alt="{{ $site.title }}" />
+      {{- else -}}
+        <span class="topbar__logo-text">{{ $site.title }}</span>
+      {{- end -}}
+    </a>
+  </div>
+
+  {{/* ── Centre: search ───────────────────────────────────────── */}}
+  <div class="topbar__center">
+    <div class="topbar__search">
+      <button class="topbar__search-btn" id="topbar-search-open" aria-label="Open search">
+        <svg class="topbar__search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="8.5" cy="8.5" r="5.5"/>
+          <path stroke-linecap="round" d="M15 15l-3-3"/>
+        </svg>
+        <span class="topbar__search-placeholder">Search…</span>
+        <kbd class="topbar__search-kbd">⌘K</kbd>
+      </button>
+    </div>
+  </div>
+
+  {{/* ── Right: pickers · hamburger ────────────────────────────── */}}
+  <div class="topbar__right">
+
+    {{/* Version picker */}}
+    <app-dropdown v-if="currentVersion" class="topbar__picker" :items="versionItems" :label="currentVersion" @select="pickVersion"></app-dropdown>
+
+    {{/* Language picker */}}
+    <app-dropdown v-if="currentLang" class="topbar__picker" :items="langItems" :label="currentLang" @select="pickLang"></app-dropdown>
+
+    {{/* Theme toggle */}}
+    {{ partial "ui/button.gohtml" (dict
+      "icons"  (slice
+        (dict "name" "theme-light" "class" "topbar__theme-icon--light")
+        (dict "name" "theme-dark"  "class" "topbar__theme-icon--dark")
+      )
+      "label"  "Toggle colour scheme"
+      "class"  "topbar__theme-btn btn--icon btn--soft"
+      "@click" "toggle"
+    ) }}
+
+    {{/* Settings hamburger — mobile only */}}
+    {{ partial "ui/button.gohtml" (dict
+      "icon"                    "hamburger"
+      "label"                   "Open settings"
+      "class"                   "topbar__settings-btn btn--icon btn--soft"
+      "@click"                  "toggleSettingsPanel"
+      ":class"                  "{ 'is-open': settingsPanelOpen }"
+    ) }}
+
+  </div>
+</header>

@@ -1,0 +1,32 @@
+{{- $page    := .page -}}
+{{- $version := .version -}}
+{{- $lang    := .lang -}}
+
+{{- $langSection := $page.Site.GetPage (printf "/docs/%s/%s" $version $lang) -}}
+
+<nav class="docs-nav" id="docs-nav" aria-label="Documentation navigation">
+
+  <div class="docs-nav__inner">
+
+    {{- if $langSection -}}
+      {{- range $langSection.Sections.ByWeight -}}
+        {{- $section := . -}}
+        {{- $open := hasPrefix $page.RelPermalink $section.RelPermalink -}}
+
+        <docs-nav-group label="{{ $section.Title }}" :initial-open="{{ $open }}">
+          {{- range $section.Pages.ByWeight -}}
+            {{- $active := eq $page.RelPermalink .RelPermalink -}}
+            <li class="docs-nav__item">
+              <a href="{{ .RelPermalink }}"
+                 class="docs-nav__link{{ if $active }} docs-nav__link--active{{ end }}">
+                {{ .Title }}
+              </a>
+            </li>
+          {{- end -}}
+        </docs-nav-group>
+
+      {{- end -}}
+    {{- end -}}
+
+  </div>
+</nav>

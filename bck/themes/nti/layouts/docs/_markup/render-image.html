@@ -1,0 +1,35 @@
+{{- $dest := .Destination -}}
+{{- $text := .PlainText -}}
+{{- $url  := urls.Parse $dest -}}
+
+{{- $res := "" -}}
+{{- with $url.Scheme -}}
+  {{- $res = resources.GetRemote $dest -}}
+{{- else -}}
+  {{- $res = resources.Get $dest -}}
+{{- end -}}
+
+{{- if .Title }}
+<figure class="doc-figure">
+  {{- with $res }}
+    {{- if eq .MediaType.SubType "svg" }}
+      {{ .Content | safeHTML }}
+    {{- else }}
+      <img src="{{ .RelPermalink | safeURL }}" alt="{{ $text }}" width="{{ .Width }}" height="{{ .Height }}" loading="lazy">
+    {{- end }}
+  {{- else }}
+    <img src="{{ $dest | safeURL }}" alt="{{ $text }}" loading="lazy">
+  {{- end }}
+  <figcaption class="doc-figure__caption">{{ .Title | markdownify }}</figcaption>
+</figure>
+{{- else }}
+  {{- with $res }}
+    {{- if eq .MediaType.SubType "svg" }}
+      {{ .Content | safeHTML }}
+    {{- else }}
+      <img src="{{ .RelPermalink | safeURL }}" alt="{{ $text }}" width="{{ .Width }}" height="{{ .Height }}" loading="lazy">
+    {{- end }}
+  {{- else }}
+    <img src="{{ $dest | safeURL }}" alt="{{ $text }}" loading="lazy">
+  {{- end }}
+{{- end }}

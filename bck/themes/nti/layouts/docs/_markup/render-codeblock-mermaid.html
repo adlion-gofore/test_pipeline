@@ -1,0 +1,13 @@
+<pre class="mermaid">
+  {{- .Inner }}
+</pre>
+{{- if not (.Page.Store.Get "hasMermaid") }}
+<script type="module">
+  import mermaid from '{{ "docs/js/mermaid.esm.min.mjs" | relURL }}';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+  });
+</script>
+{{- end }}
+{{- .Page.Store.Set "hasMermaid" true }}

@@ -1,0 +1,95 @@
+.docs-list {
+  padding: var(--nti-space-12) var(--nti-space-8);
+
+  &__title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--md-sys-color-on-background);
+    margin-bottom: var(--nti-space-2);
+  }
+
+  &__sep {
+    border: none;
+    border-top: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    margin-bottom: var(--nti-space-8);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 1.5rem;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: var(--md-sys-color-surface-container-low);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      border-color: var(--md-sys-color-primary);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    &--draft {
+      border-color: #f59e0b;
+      opacity: 0.75;
+
+      &:hover {
+        border-color: #d97706;
+      }
+    }
+  }
+
+  &__card-draft-badge {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 4px;
+    padding: 1px 6px;
+  }
+
+  &__card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  &__card-icon {
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    color: var(--md-sys-color-primary);
+  }
+
+  &__card-title {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--md-sys-color-on-surface);
+    line-height: 1.3;
+  }
+
+  &__card-sep {
+    border: none;
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+    margin: 0.75rem 0;
+  }
+
+  &__card-desc {
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--md-sys-color-on-surface-variant);
+    line-height: 1.6;
+  }
+}

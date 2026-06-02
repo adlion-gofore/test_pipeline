@@ -1,0 +1,73 @@
+@use '../../../mixins' as mx;
+
+.breadcrumbs {
+  padding-left: calc(34px + var(--nti-space-3) * 2);
+  margin-bottom: var(--nti-space-5);
+
+  @include mx.lg {
+    padding-left: 0;
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: var(--nti-space-1);
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    color: color-mix(in srgb, var(--md-sys-color-primary) 60%, var(--md-sys-color-on-surface-variant));
+
+    // CSS-only separator — only items after the first get a /
+    & + & {
+      gap: var(--nti-space-1);
+
+      &::before {
+        content: "/";
+        color: var(--md-sys-color-outline-variant);
+        font-size: 14px;
+        line-height: 1;
+      }
+    }
+
+    &--current {
+      font-weight: 700;
+      color: var(--md-sys-color-primary);
+    }
+  }
+
+  &__link {
+    color: color-mix(in srgb, var(--md-sys-color-primary) 60%, var(--md-sys-color-on-surface-variant));
+    text-decoration: none;
+    transition: color 0.15s;
+    text-underline-offset: 3px;
+
+    &:hover {
+      color: var(--md-sys-color-primary);
+      text-decoration: underline;
+    }
+
+    &--home {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+
+      &:hover {
+        color: var(--md-sys-color-primary);
+        text-decoration: none;
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+.drawio {
+  width: 90%;
+  margin: var(--nti-space-6) auto;
+  border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+  border-radius: var(--nti-radius-lg);
+  overflow: auto;
+  resize: both;
+  background: var(--md-sys-color-surface-container-low);
+
+  &__graph {
+    width: 100%;
+    min-height: 500px;
+  }
+}

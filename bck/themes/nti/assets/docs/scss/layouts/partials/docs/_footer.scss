@@ -1,0 +1,42 @@
+.docs-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--nti-space-3);
+  padding: var(--nti-space-4) var(--nti-space-6);
+  border-top: var(--nti-border) solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface);
+
+  &__copy {
+    font-size: 13px;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: var(--nti-space-3);
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--md-sys-color-on-surface-variant);
+    text-decoration: none;
+    transition: color 0.15s;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      color: var(--md-sys-color-primary);
+    }
+
+    &--text {
+      font-size: 13px;
+    }
+  }
+}

@@ -1,0 +1,39 @@
+<main class="docs-main">
+
+  <article class="doc">
+
+    {{ partial "docs/breadcrumbs.gohtml" .page }}
+    <header class="doc__header">
+      <h1 class="doc__title">{{ .page.Title }}</h1>
+      {{- with .page.Description }}
+        <p class="doc__lead">{{ . }}</p>
+      {{- end }}
+    </header>
+
+    <div class="doc__body">
+      {{ .page.Content }}
+    </div>
+
+    {{- $all := where .page.Site.RegularPages "Section" .page.Section -}}
+    {{- $prev := $all.Prev .page -}}
+    {{- $next := $all.Next .page -}}
+    {{- if or $prev $next }}
+      <nav class="doc-nav">
+        {{- with $next }}
+          <a class="doc-nav__item doc-nav__item--prev" href="{{ .RelPermalink }}">
+            <span class="doc-nav__arrow">←</span>
+            <span class="doc-nav__title">{{ .Title }}</span>
+          </a>
+        {{- end }}
+        {{- with $prev }}
+          <a class="doc-nav__item doc-nav__item--next" href="{{ .RelPermalink }}">
+            <span class="doc-nav__title">{{ .Title }}</span>
+            <span class="doc-nav__arrow">→</span>
+          </a>
+        {{- end }}
+      </nav>
+    {{- end }}
+
+  </article>
+
+</main>

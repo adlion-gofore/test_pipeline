@@ -1,0 +1,158 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nti-space-2);
+  padding: var(--nti-space-2) var(--nti-space-3);
+  background: none;
+  border: none;
+  border-radius: var(--nti-radius-md);
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__icon {
+    display: contents;
+
+    &--hidden { display: none; }
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  // ── Sizes ─────────────────────────────────────────────────────
+
+  &--xs {
+    padding: var(--nti-space-1) var(--nti-space-2);
+    font-size: 0.75rem;
+    border-radius: var(--nti-radius-sm);
+
+    svg { width: 0.75rem; height: 0.75rem; }
+  }
+
+  &--sm {
+    padding: var(--nti-space-1-5) var(--nti-space-2-5);
+    font-size: 0.8125rem;
+
+    svg { width: 0.875rem; height: 0.875rem; }
+  }
+
+  &--lg {
+    padding: var(--nti-space-3) var(--nti-space-5);
+    font-size: 1rem;
+
+    svg { width: 1.125rem; height: 1.125rem; }
+  }
+
+  // ── Style variants ────────────────────────────────────────────
+
+  &--ghost {
+    &:hover {
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+    }
+  }
+
+  &--soft {
+    background: var(--md-sys-color-surface-container);
+    color: var(--md-sys-color-on-surface);
+
+    &:hover {
+      background: var(--md-sys-color-surface-container-high);
+    }
+  }
+
+  &--solid {
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+
+    &:hover {
+      background: color-mix(in srgb, var(--md-sys-color-primary) 88%, black);
+    }
+  }
+
+  &--outlined {
+    border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    color: var(--md-sys-color-on-surface);
+
+    &:hover {
+      background: var(--md-sys-color-surface-container);
+      border-color: var(--md-sys-color-outline);
+    }
+  }
+
+  // ── Tone modifiers (compose with style variants) ──────────────
+
+  &--danger {
+    &.btn--ghost,
+    &.btn--icon {
+      color: var(--md-sys-color-error);
+      &:hover {
+        background: color-mix(in srgb, var(--md-sys-color-error) 10%, transparent);
+        color: var(--md-sys-color-error);
+      }
+    }
+
+    &.btn--soft {
+      background: color-mix(in srgb, var(--md-sys-color-error) 12%, transparent);
+      color: var(--md-sys-color-error);
+      &:hover {
+        background: color-mix(in srgb, var(--md-sys-color-error) 18%, transparent);
+      }
+    }
+
+    &.btn--solid {
+      background: var(--md-sys-color-error);
+      color: var(--md-sys-color-on-error);
+      &:hover {
+        background: color-mix(in srgb, var(--md-sys-color-error) 88%, black);
+      }
+    }
+
+    &.btn--outlined {
+      border-color: var(--md-sys-color-error);
+      color: var(--md-sys-color-error);
+      &:hover {
+        background: color-mix(in srgb, var(--md-sys-color-error) 10%, transparent);
+      }
+    }
+  }
+
+  // ── Shape ─────────────────────────────────────────────────────
+
+  &--icon {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+
+    &.btn--xs { width: 1.5rem; height: 1.5rem; }
+    &.btn--sm { width: 1.75rem; height: 1.75rem; }
+    &.btn--lg { width: 2.5rem; height: 2.5rem; }
+
+    &:hover {
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+    }
+  }
+
+  &--circle {
+    border-radius: 50%;
+  }
+
+  &--full {
+    width: 100%;
+  }
+}

@@ -1,0 +1,27 @@
+<script type="text/x-template" id="app-dropdown">
+  <div class="dropdown"
+       :data-dropdown-open-value="open ? 'true' : 'false'"
+       :class="{ 'dropdown--placement-up': placementUp, 'dropdown--placement-right': placementRight }">
+    <button class="dropdown__trigger"
+            type="button"
+            aria-haspopup="listbox"
+            :aria-expanded="open ? 'true' : 'false'"
+            :disabled="items.length <= 1"
+            @click="toggleOpen">
+      <span class="dropdown__label" v-text="label"></span>
+      <svg class="dropdown__chevron" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </button>
+    <ul class="dropdown__menu" role="listbox">
+      <li v-for="item in items"
+          :key="item.value"
+          class="dropdown__option"
+          :class="{ 'dropdown__option--active': item.active }"
+          role="option"
+          @click="onSelect(item)"
+          v-text="item.label">
+      </li>
+    </ul>
+  </div>
+</script>

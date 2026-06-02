@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"><head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>window.__NTI_THEMES__ = [{"dark":false,"default":true,"id":"light","label":"Light"},{"dark":true,"default":false,"id":"dark","label":"Dark"},{"dark":false,"default":false,"id":"light-hc","label":"Light HC"},{"dark":false,"default":false,"id":"light-mc","label":"Light MC"},{"dark":true,"default":true,"id":"dark-hc","label":"Dark HC"},{"dark":true,"default":false,"id":"dark-mc","label":"Dark MC"}];</script>
+  <script>
+    (function () {
+      var stored = localStorage.getItem("nti-themes");
+      var id;
+      if (stored) {
+        try { id = JSON.parse(stored).find(function (t) { return t.selected; })?.id; } catch (_) {}
+      }
+      if (!id) {
+        var isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var themes = window.__NTI_THEMES__ || [];
+        var def = themes.find(function (t) { return t.dark === isDark && t.default; })
+               || themes.find(function (t) { return t.dark === isDark; })
+               || themes.find(function (t) { return !t.dark; })
+               || themes[0];
+        id = def ? def.id : (isDark ? "dark" : "light");
+      }
+      document.documentElement.setAttribute("data-theme", id);
+    })();
+  </script>
+  <style>
+    [v-cloak]{visibility:hidden}
+    .app-loader{display:none}
+    [v-cloak] .app-loader{
+      visibility:visible;
+      display:flex;
+      position:fixed;
+      inset:0;
+      align-items:center;
+      justify-content:center;
+      background:rgb(255 248 246);
+    }
+    [data-theme^="dark"] [v-cloak] .app-loader{background:rgb(26 17 15)}
+    .app-loader__spinner{
+      width:2rem;
+      height:2rem;
+      border-radius:50%;
+      border:2px solid rgba(143,76,56,0.2);
+      border-top-color:rgb(143 76 56);
+      animation:_nti-spin 0.7s linear infinite;
+    }
+    [data-theme^="dark"] .app-loader__spinner{
+      border-color:rgba(255,181,159,0.2);
+      border-top-color:rgb(255 181 159);
+    }
+    @keyframes _nti-spin{to{transform:rotate(360deg)}}
+  </style><link rel="stylesheet" href="/docs/scss/main.min.896fe2bad0fe73729a66e8ecec9062cd16e822fa892ff0107e6698253a772cefa0dbf380a492d20e12942286b9b0a08a.css" integrity="sha384-iW/iutD&#43;c3KaZujs7JBizRboIvqJL/AQfmaYJTp3LO&#43;g2/OApJLSDhKUIoa5sKCK" crossorigin="anonymous" />
+	<link rel="stylesheet" href="/docs/css/theme-light.css" />
+	<link rel="stylesheet" href="/docs/css/theme-dark.css" />
+	<link rel="stylesheet" href="/docs/css/theme-light-hc.css" />
+	<link rel="stylesheet" href="/docs/css/theme-light-mc.css" />
+	<link rel="stylesheet" href="/docs/css/theme-dark-hc.css" />
+	<link rel="stylesheet" href="/docs/css/theme-dark-mc.css" />
+<link rel="stylesheet" href="/docs/css/theme-syntax.css" />
+
+
+
+<title>Delivery Timeline | Avant Docs</title>
+	<meta name="description" content="Development phases, milestone schedule, and min/max delivery estimates for the Avant UDS library." />
+
+
+<link rel="icon" href="/docs/media/svg/favicon.svg" />
+
+
+<link rel="preload" href="/docs/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin />
+
+</head>
+<body>
+
+    
+
+<div class="app-root" data-vue-app="app-root" v-cloak>
+	<div class="app-loader" aria-label="Loading" role="status">
+		<div class="app-loader__spinner"></div>
+	</div>
+	<header class="topbar">
+
+  
+  <div class="topbar__left">
+    <a href="/" class="topbar__logo" aria-label="Avant Docs"><img src="/docs/media/svg/logo.svg" alt="Avant Docs" /></a>
+  </div>
+
+  
+  <div class="topbar__center">
+    <div class="topbar__search">
+      <button class="topbar__search-btn" id="topbar-search-open" aria-label="Open search">
+        <svg class="topbar__search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="8.5" cy="8.5" r="5.5"/>
+          <path stroke-linecap="round" d="M15 15l-3-3"/>
+        </svg>
+        <span class="topbar__search-placeholder">Search…</span>
+        <kbd class="topbar__search-kbd">⌘K</kbd>
+      </button>
+    </div>
+  </div>
+
+  
+  <div class="topbar__right">
+
+    
+    <app-dropdown v-if="currentVersion" class="topbar__picker" :items="versionItems" :label="currentVersion" @select="pickVersion"></app-dropdown>
+
+    
+    <app-dropdown v-if="currentLang" class="topbar__picker" :items="langItems" :label="currentLang" @select="pickLang"></app-dropdown>
+
+    
+    <button class="btn topbar__theme-btn btn--icon btn--soft"
+	aria-label="Toggle colour scheme" @click="toggle"><span class="btn__icon topbar__theme-icon--light"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a7 7 0 1 1 0-14 7 7 0 0 1 0 14zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/>
+</svg>
+</span><span class="btn__icon topbar__theme-icon--dark btn__icon--hidden"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+</svg>
+</span></button>
+
+
+    
+    <button class="btn topbar__settings-btn btn--icon btn--soft"
+	aria-label="Open settings" :class="{ 'is-open': settingsPanelOpen }" @click="toggleSettingsPanel"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M3 10h14"/>
+  <path d="M3 10h14"/>
+  <path d="M3 10h14"/>
+</svg>
+</button>
+
+
+  </div>
+</header>
+
+	<div class="search-overlay"
+     id="search-overlay"
+     aria-hidden="true"
+     data-version="v0_0_1"
+     data-lang="en">
+
+  <div class="search-modal" role="dialog" aria-label="Search documentation">
+
+    <div class="search-modal__bar">
+      <svg class="search-modal__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <circle cx="8.5" cy="8.5" r="5.5"/>
+        <path stroke-linecap="round" d="M15 15l-3-3"/>
+      </svg>
+      <input type="search"
+             id="flexsearch"
+             class="search-modal__input"
+             placeholder="Search docs…"
+             autocomplete="off"
+             spellcheck="false"
+             aria-label="Search">
+      <kbd class="search-modal__esc">Esc</kbd>
+    </div>
+
+    <div class="search-modal__filters" role="group" aria-label="Search scope">
+      <select class="search-modal__select" id="search-version-select" aria-label="Version"></select>
+      <select class="search-modal__select" id="search-lang-select"    aria-label="Language"></select>
+      <button class="search-modal__all-btn" id="search-all-btn" aria-pressed="false">All</button>
+    </div>
+
+    <div id="suggestions" class="search-modal__results" role="listbox"></div>
+
+  </div>
+</div>
+
+<script src="/js/flexsearch.bundle.js"></script>
+<script>
+(function () {
+  var idx = new FlexSearch.Document({
+    tokenize: "forward",
+    cache: 100,
+    document: {
+      id: "id",
+      store: ["href", "title", "description"],
+      index: ["title", "description", "content"]
+    }
+  });
+
+  idx.add({
+    id:  0 ,
+    href: "/docs/v1.0.0/en/planning/code-examples/",
+    title: "Code Examples",
+    description: "Syntax highlighting and code block examples across multiple languages.",
+    content: "TypeScript typescript import { createApp, ref, computed } from 'vue'; interface User { id: number; name: string; email: string; role: 'admin' | 'viewer'; } const useUsers = () =\u003e { const users = ref\u003cUser[]\u003e([]); const loading = ref(false); const admins = computed(() =\u003e users.value.filter(u =\u003e u.role === 'admin') ); const fetchUsers = async (): Promise\u003cvoid\u003e =\u003e { loading.value = true; try { const res = await fetch('/api/users'); users.value = await res.json(); } finally { loading.value = false; } }; return { users, loading, admins, fetchUsers }; }; export default createApp({ setup() { const { users, loading, fetchUsers } = useUsers(); fetchUsers(); return { users, loading }; }, }); Go go package main import ( \"context\" \"fmt\" \"log\" \"net/http\" \"time\" ) type Server struct { addr string timeout time.Duration } func NewServer(addr string) *Server { return \u0026Server{addr: addr, timeout: 30 * time.Second} } func (s *Server) Start(ctx context.Context) error { mux := http.NewServeMux() mux.HandleFunc(\"/health\", func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusOK) fmt.Fprintln(w, \"ok\") }) srv := \u0026http.Server{Addr: s.addr, Handler: mux, ReadTimeout: s.timeout} go func() { \u003c-ctx.Done() srv.Shutdown(context.Background()) }() log.Printf(\"listening on %s\", s.addr) return srv.ListenAndServe() } Python python from dataclasses import dataclass, field from typing import Optional import httpx import asyncio @dataclass class Config: base_url: str api_key: str timeout: float = 10.0 retries: int = 3 headers: dict = field(default_factory=dict) class APIClient: def __init__(self, config: Config) -\u003e None: self.config = config self._client: Optional[httpx.AsyncClient] = None async def __aenter__(self): self._client = httpx.AsyncClient( base_url=self.config.base_url, headers={\"Authorization\": f\"Bearer {self.config.api_key}\"}, timeout=self.config.timeout, ) return self async def __aexit__(self, *args): await self._client.aclose() async def get(self, path: str) -\u003e dict: for attempt in range(self.config.retries): try: response = await self._client.get(path) response.raise_for_status() return response.json() except httpx.HTTPError as e: if attempt == self.config.retries - 1: raise SCSS scss @use 'tokens/breakpoints' as *; .card { display: flex; flex-direction: column; gap: var(--nti-space-4); padding: var(--nti-space-6); background: var(--md-sys-color-surface-container-low); border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--nti-radius-lg); transition: box-shadow 150ms ease; \u0026:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); } \u0026__title { font-size: 1.125rem; font-weight: 600; color: var(--md-sys-color-on-surface); } \u0026__body { font-size: 0.875rem; color: var(--md-sys-color-on-surface-variant); line-height: 1.6; } } @media (min-width: $breakpoint-md) { .card { flex-direction: row; align-items: flex-start; } } SQL sql SELECT u.id, u.name, u.email, COUNT(o.id) AS order_count, SUM(o.total) AS lifetime_value, MAX(o.created_at) AS last_order_at FROM users u LEFT JOIN orders o ON o.user_id = u.id AND o.status = 'completed' WHERE u.created_at \u003e= NOW() - INTERVAL '90 days' AND u.deleted_at IS NULL GROUP BY u.id, u.name, u.email HAVING COUNT(o.id) \u003e 0 ORDER BY lifetime_value DESC LIMIT 50; Shell bash #!/usr/bin/env bash set -euo pipefail IMAGE=\"registry.example.com/app\" TAG=\"${1:-latest}\" echo \"Building ${IMAGE}:${TAG}\" docker build \\ --platform linux/amd64 \\ --build-arg BUILD_DATE=\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\" \\ --tag \"${IMAGE}:${TAG}\" \\ --tag \"${IMAGE}:latest\" \\ . docker push \"${IMAGE}:${TAG}\" docker push \"${IMAGE}:latest\" echo \"Done — pushed ${IMAGE}:${TAG}\" Inline code Use npm install to add dependencies. The --save-dev flag marks packages as devDependencies. Config lives in package.json and lock state in package-lock.json.\n"
+  });
+  idx.add({
+    id:  1 ,
+    href: "/docs/v0_0_1/en/planning/delivery_timeline/",
+    title: "Delivery Timeline",
+    description: "Development phases, milestone schedule, and min/max delivery estimates for the Avant UDS library.",
+    content: "Phases Phase 1 - Pre-study Target: w20-w24 (13 May - 13 June 2026) (some team members are in vacations so not the whole period is used)\nTask Notes Status Review existing Rust libraries automotive_diag, ecu_diagnostics, automotive (I-CAN-hack) in progress Confirm requirements and service list Resolve proposed vs agreed services with Avant in progress Finalize architecture and interface design Transport trait, layer boundaries, feature flags in progress Assess user-space ISO-TP need Check kernel version on Avant RCU hardware not started Resolve Windows CAN adapter open item Which vendor SDKs must be wrapped not started Resolve client vs server scope Recommendation clientonly for initial scope not started Phase 2 - Core Implementation (Linux target) Target: w26-w32 (22 June - 7 August 2026)\nTask Notes Status Repository setup GitHub, Cargo workspace, feature flags not started Protocol layer Service definitions, NRC enum, request/response types not started UDS session manager Session state machine, TesterPresent heartbeat task not started Transport abstraction trait Send/receive PDU interface, error type separation not started Linux ISO-TP backend socketcan + socketcan-isotp, async tokio integration not started Mock transport For unit testing without hardware not started Unit and integration tests Virtual CAN (vcan) on Linux for CI not started Phase 3 - Python Bindings Target: w33-w36 (10 August - 4 September 2026) - ~4 weeks\nTask Notes Status PyO3 + maturin project setup Build pipeline for Python wheel not started Bind UdsClient and all agreed services Async methods via pyo3-asyncio not started Python-level error types Map Rust error variants to Python exceptions not started Basic Python usage test Smoke test against vcan or real hardware not started Phase 4 - Hardening and Documentation Target: w34-w37 (August - September 2026)\nThese tasks improve quality and maintainability but do not block the Cube product from using the library.\nTask Notes Status Edge case handling Session timeout recovery, NRC 0x78 response pending retry not started Endianness and multi-arch validation Test on multi ARM target if available not started Full API documentation Rust doc comments, Python usage guide not started Extended integration tests Real hardware test scenarios not started Final review with Avant Hand over on completed library not started Phase 5 - Windows Backend Target: w35+\nDepends on resolution of the open item. Which CAN adapter vendor to support on Windows. Each vendor requires a separate backend wrapping their SDK via Rust FFI. Cannot be planned in detail until the adapter decision is made.\nPhase 6 - DoIP Backend (nice to have) Target: TBD\nScoped as a future phase. Requires DoIP crate evaluation (doip-tokio, doip-codec) and a DoIP-capable test environment. Avant need to decide.\nMin / Max Estimates Minimum (optimistic) Milestone Date Pre-study complete w24 - 13 June 2026 Core Linux implementation done w30 - 25 July 2026 Python bindings done w35 - 29 August 2026 Hardening and full docs done w37 - 11 September 2026 Windows backend (1st vendor) w40 - early October 2026 DoIP backend TBD Maximum (conservative) Milestone Date Pre-study complete w25 - 20 June 2026 Core Linux implementation done w32 - 7 August 2026 Python bindings done w36 - 4 September 2026 Hardening and full docs done w38 - 18 September 2026 Windows backend (1st vendor) w43 - late October 2026 DoIP backend TBD Risks Risk Impact Mitigation Windows CAN adapter not decided Blocks Windows phase entirely Resolve in pre-study. Avant RCU kernel too old for socketcan-isotp Forces userspace ISO-TP implementation, +2-3 weeks Assess kernel version in pre-study phase Scope expansion (server side, DTC) Delays core delivery Keep initial scope to client-only. Defer formally in pre-study review. Most libs have only client side implementation adding on top only the required server side handlers. PyO3/tokio async integration complexity +1-2 weeks Prototype pyo3-asyncio early in Phase 3 Rust cross-compilation issues on target HW +1 week Test crosscompile to ARM target early in Phase 2 "
+  });
+  idx.add({
+    id:  2 ,
+    href: "/docs/v1.0.0/en/planning/delivery_timeline/",
+    title: "Delivery Timeline",
+    description: "Development phases, milestone schedule, and min/max delivery estimates for the Avant UDS library.",
+    content: "Phases Phase 1 - Pre-study Target: w20-w24 (13 May - 13 June 2026) (some team members are in vacations so not the whole period is used)\nTask Notes Status Review existing Rust libraries automotive_diag, ecu_diagnostics, automotive (I-CAN-hack) in progress Confirm requirements and service list Resolve proposed vs agreed services with Avant in progress Finalize architecture and interface design Transport trait, layer boundaries, feature flags in progress Assess user-space ISO-TP need Check kernel version on Avant RCU hardware not started Resolve Windows CAN adapter open item Which vendor SDKs must be wrapped not started Resolve client vs server scope Recommendation clientonly for initial scope not started Phase 2 - Core Implementation (Linux target) Target: w26-w32 (22 June - 7 August 2026)\nTask Notes Status Repository setup GitHub, Cargo workspace, feature flags not started Protocol layer Service definitions, NRC enum, request/response types not started UDS session manager Session state machine, TesterPresent heartbeat task not started Transport abstraction trait Send/receive PDU interface, error type separation not started Linux ISO-TP backend socketcan + socketcan-isotp, async tokio integration not started Mock transport For unit testing without hardware not started Unit and integration tests Virtual CAN (vcan) on Linux for CI not started Phase 3 - Python Bindings Target: w33-w36 (10 August - 4 September 2026) - ~4 weeks\nTask Notes Status PyO3 + maturin project setup Build pipeline for Python wheel not started Bind UdsClient and all agreed services Async methods via pyo3-asyncio not started Python-level error types Map Rust error variants to Python exceptions not started Basic Python usage test Smoke test against vcan or real hardware not started Phase 4 - Hardening and Documentation Target: w34-w37 (August - September 2026)\nThese tasks improve quality and maintainability but do not block the Cube product from using the library.\nTask Notes Status Edge case handling Session timeout recovery, NRC 0x78 response pending retry not started Endianness and multi-arch validation Test on multi ARM target if available not started Full API documentation Rust doc comments, Python usage guide not started Extended integration tests Real hardware test scenarios not started Final review with Avant Hand over on completed library not started Phase 5 - Windows Backend Target: w35+\nDepends on resolution of the open item. Which CAN adapter vendor to support on Windows. Each vendor requires a separate backend wrapping their SDK via Rust FFI. Cannot be planned in detail until the adapter decision is made.\nPhase 6 - DoIP Backend (nice to have) Target: TBD\nScoped as a future phase. Requires DoIP crate evaluation (doip-tokio, doip-codec) and a DoIP-capable test environment. Avant need to decide.\nMin / Max Estimates Minimum (optimistic) Milestone Date Pre-study complete w24 - 13 June 2026 Core Linux implementation done w30 - 25 July 2026 Python bindings done w35 - 29 August 2026 Hardening and full docs done w37 - 11 September 2026 Windows backend (1st vendor) w40 - early October 2026 DoIP backend TBD Maximum (conservative) Milestone Date Pre-study complete w25 - 20 June 2026 Core Linux implementation done w32 - 7 August 2026 Python bindings done w36 - 4 September 2026 Hardening and full docs done w38 - 18 September 2026 Windows backend (1st vendor) w43 - late October 2026 DoIP backend TBD Risks Risk Impact Mitigation Windows CAN adapter not decided Blocks Windows phase entirely Resolve in pre-study. Avant RCU kernel too old for socketcan-isotp Forces userspace ISO-TP implementation, +2-3 weeks Assess kernel version in pre-study phase Scope expansion (server side, DTC) Delays core delivery Keep initial scope to client-only. Defer formally in pre-study review. Most libs have only client side implementation adding on top only the required server side handlers. PyO3/tokio async integration complexity +1-2 weeks Prototype pyo3-asyncio early in Phase 3 Rust cross-compilation issues on target HW +1 week Test crosscompile to ARM target early in Phase 2 "
+  });
+  idx.add({
+    id:  3 ,
+    href: "/docs/v0_0_1/en/planning/existing_libraries/",
+    title: "Existing UDS Libraries",
+    description: "Notes on existing Rust UDS and automotive diagnostic libraries taken in consideration for the Avant UDS pre-study.",
+    content: "automotive_diag Crate / Repo: https://github.com/oxibus/automotive_diag\nLicense: MIT OR Apache-2.0\nDescription: Low-level, no_std compatible collection of structs and enums covering UDS (ISO-14229-1), KWP2000 (ISO-14230), OBD-II (ISO-9141), and DoIP (ISO-13400) protocol definitions. Has enum-to-byte conversions for all major service identifiers and response codes. Doesn’t implement any transport logic, session management, or security key handling. It’s just a protocol definitions layer.\necu_diagnostics Crate / Repo: https://github.com/rnd-ash/ecu_diagnostics\nLicense: GPL-3.0\nDescription: ECU diagnostic client covering UDS, KWP2000, and OBD-II. Has a high-level client API with structured request/response handling, FFI bindings for C/C++ interop, and a protocol server abstraction. Hardware support is mainly through the Windows PassThru (SAE J2534) API, with no native Linux SocketCAN integration.\nautomotive (I-CAN-hack) Crate / Repo: https://github.com/I-CAN-hack/automotive\nLicense: MIT\nDescription: Async library combining CAN adapter support, ISO-TP transport, and a UDS client. Supports SocketCAN on Linux and the panda adapter (cross-platform via USB). Built for multi-ECU parallel communication using async/await.\nlibautomotive Crate / Repo: https://github.com/shishir-dey/libautomotive\nLicense: MIT\nDescription: Early-stage library with an OSI-inspired architecture covering CAN/CAN-FD, J1939, ISO-TP, UDS, and OBD-II. MIT licensed. The architecture is well thought out but the implementation isn’t there yet - no releases published, API is unstable, and barely anyone is using it.\nsocketcan-isotp Crate / Repo: https://github.com/marcelbuesing/socketcan-isotp\nCrate: https://crates.io/crates/socketcan-isotp\nLicense: MIT\nDescription: Rust bindings for the Linux kernel’s SocketCAN ISO-TP interface. Has blocking and async access to ISO 15765-2 framing through the kernel’s native AF_CAN socket layer.\nsocketcan Crate: https://crates.io/crates/socketcan\nLicense: MIT\nDescription: Rust bindings for Linux SocketCAN, fairly mature. Supports async via tokio, async-std, and smol. Gives access to raw CAN frames, CAN-FD, and filtering through the kernel’s native AF_CAN interface.\nCrates which may help DoIP crates Repos / Crates:\nhttps://github.com/marcelbuesing/doip https://crates.io/crates/doip-tokio https://crates.io/crates/doip-codec License: Various (MIT / Apache-2.0)\nDescription: A few small crates covering DoIP (ISO 13400) client/server, async tokio integration, and message encoding/decoding. None are mature or widely used.\n"
+  });
+  idx.add({
+    id:  4 ,
+    href: "/docs/v1.0.0/en/planning/existing_libraries/",
+    title: "Existing UDS Libraries",
+    description: "Notes on existing Rust UDS and automotive diagnostic libraries taken in consideration for the Avant UDS pre-study.",
+    content: "automotive_diag Crate / Repo: https://github.com/oxibus/automotive_diag\nLicense: MIT OR Apache-2.0\nDescription: Low-level, no_std compatible collection of structs and enums covering UDS (ISO-14229-1), KWP2000 (ISO-14230), OBD-II (ISO-9141), and DoIP (ISO-13400) protocol definitions. Has enum-to-byte conversions for all major service identifiers and response codes. Doesn’t implement any transport logic, session management, or security key handling. It’s just a protocol definitions layer.\necu_diagnostics Crate / Repo: https://github.com/rnd-ash/ecu_diagnostics\nLicense: GPL-3.0\nDescription: ECU diagnostic client covering UDS, KWP2000, and OBD-II. Has a high-level client API with structured request/response handling, FFI bindings for C/C++ interop, and a protocol server abstraction. Hardware support is mainly through the Windows PassThru (SAE J2534) API, with no native Linux SocketCAN integration.\nautomotive (I-CAN-hack) Crate / Repo: https://github.com/I-CAN-hack/automotive\nLicense: MIT\nDescription: Async library combining CAN adapter support, ISO-TP transport, and a UDS client. Supports SocketCAN on Linux and the panda adapter (cross-platform via USB). Built for multi-ECU parallel communication using async/await.\nlibautomotive Crate / Repo: https://github.com/shishir-dey/libautomotive\nLicense: MIT\nDescription: Early-stage library with an OSI-inspired architecture covering CAN/CAN-FD, J1939, ISO-TP, UDS, and OBD-II. MIT licensed. The architecture is well thought out but the implementation isn’t there yet - no releases published, API is unstable, and barely anyone is using it.\nsocketcan-isotp Crate / Repo: https://github.com/marcelbuesing/socketcan-isotp\nCrate: https://crates.io/crates/socketcan-isotp\nLicense: MIT\nDescription: Rust bindings for the Linux kernel’s SocketCAN ISO-TP interface. Has blocking and async access to ISO 15765-2 framing through the kernel’s native AF_CAN socket layer.\nsocketcan Crate: https://crates.io/crates/socketcan\nLicense: MIT\nDescription: Rust bindings for Linux SocketCAN, fairly mature. Supports async via tokio, async-std, and smol. Gives access to raw CAN frames, CAN-FD, and filtering through the kernel’s native AF_CAN interface.\nCrates which may help DoIP crates Repos / Crates:\nhttps://github.com/marcelbuesing/doip https://crates.io/crates/doip-tokio https://crates.io/crates/doip-codec License: Various (MIT / Apache-2.0)\nDescription: A few small crates covering DoIP (ISO 13400) client/server, async tokio integration, and message encoding/decoding. None are mature or widely used.\n"
+  });
+  idx.add({
+    id:  5 ,
+    href: "/docs/v0_0_1/en/planning/uds_architecture/",
+    title: "UDS Architecture",
+    description: "Architecture design for the Avant UDS library - layering, backends, crate selection, and Python bindings.",
+    content: "Overview The library is a mostly client-side (tester)(To be further refined on the role during meetings) UDS implementation written in Rust. It targets embedded Linux as the primary platform, with Windows as a secondary target. The design uses a layered architecture so that backends (CAN, DoIP) can be swapped without touching the UDS service layer.\nThe public API is exposed both as a native Rust crate and through Python bindings via PyO3/maturin.\nLayers in Detail UDS Service Layer Implements all required UDS services as typed request/response pairs. Protocol byte definitions, service identifiers, response codes, and NRC (Negative Response Code ) enums, are implemented from scratch within the library rather than imported from an external crate. This avoids taking a hard dependency on a third-party library whose API or data model may change between releases, which would force interface changes up the stack.\nExisting open-source implementations such as automotive_diag are used as verified references during development to cross-check byte values, service encodings, and edge-case behaviour against a known-working baseline. The definitions are our own but the reference material is theirs.\nRequired services:\nService SID Status DiagnosticSessionControl 0x10 agreed ECUReset 0x11 agreed SecurityAccess 0x27 agreed ReadDataByIdentifier 0x22 agreed WriteDataByIdentifier 0x2E agreed RoutineControl 0x31 agreed RequestDownload 0x34 agreed RequestUpload 0x35 agreed TransferData 0x36 agreed RequestTransferExit 0x37 agreed RequestFileTransfer 0x38 agreed TesterPresent 0x3E agreed CommunicationControl 0x28 proposed ControlDTCSetting 0x85 proposed LinkControl 0x87 proposed DTC services are explicitly out of scope.\nEach service is implemented as an async function on a UdsClient struct. Positive and negative responses map to typed Result variants. Negative Response Codes (NRC) are defined as an owned enum within the library.\nUDS Session Manager Tracks the active diagnostic session (Default, Programming, Extended) and automatically sends periodic TesterPresent frames to keep the session alive. Runs as a background tokio task. The session manager is transparent to callers the UdsClient handles it internally (Result on how other crates have implemented it).\nTransport Abstraction A single async trait defines the contract between the UDS layer and any backend. The trait exposes two operations. Sending a raw UDS PDU down to the transport and receiving one back up with no knowledge of what sits below. This boundary is the key design decision that keeps the UDS service layer entirely independent of physical transport details.\nAny type that satisfies the trait can plug in as a backend. For example the Linux SocketCAN+ISO-TP stack, a future Windows FFI adapter, a DoIP socket, or a mock implementation used in unit tests. Swapping the backend requires no changes to the UDS service layer or session manager above it.\nError handling at this boundary distinguishes transport-level failures (frame loss, timeout, bus-off) from UDS-level negative responses, so callers always know which layer a failure came from.\nISO-TP Backend (Linux) Uses socketcan + socketcan-isotp to talk to the kernel’s native ISO-TP socket interface (AF_CAN, SOCK_DGRAM, CAN_ISOTP). This offloads all frame segmentation and flow control to the kernel, which is the most robust approach on Linux.\nThe Linux backend implements UdsTransport directly on top of an async socketcan-isotp socket.\nA userspace ISO-TP implementation where segmentation and flow control are handled in the library rather than the kernel may be considered in a later phase if target environments require it (e.g. older kernels without ISO-TP socket support, or non-Linux POSIX systems). Because the transport trait isolates this layer, switching between kernel and user-space ISO-TP would not affect any code above it. (Action point: assess user-space ISO-TP need based on target hardware during pre-study. Check if older versions of Avnant RCUs do have al the kernel headers for socketcan and offloading on kernel)\nISO-TP Backend (Windows) No mature native Rust solution exists for Windows CAN. Unlike Linux where SocketCAN provides a unified kernel interface, Windows has no common hardware abstraction. Each CAN adapter vendor ships its own SDK and driver. This means the Windows layer will not be a single backend but rather one backend per supported vendor adapter (e.g. PCAN, Kvaser, Vector), each implementing the transport trait independently.\nEach vendor backend integrates against that vendors SDK. The SDK may be written in C, C++, or any other language. What matters is that it can be compiled into a linkable library that Rust can call via FFI. Rust unsafe FFI boundary handles the interop, keeping the rest of the library fully safe. The transport trait ensures none of this vendor specific complexity leaks upward into the UDS service layer.\nThe specific adapter or adapters to support is an open item from the kick-off. This decision must be made before any Windows backend work begins, as it determines which SDKs need to be wrapped.\nDoIP Backend (nice to have) DoIP replaces CAN+ISO-TP with UDP/IP as the physical transport. The UdsTransport trait applies identically. A DoipTransport struct sends and receives UDS PDUs over a DoIP connection. Candidate crates: doip-tokio, doip-codec. Scoped for a later phase after the Linux CAN backend is complete.\nCross-cutting Concerns Endianness Rust standard library provides u16::from_be_bytes / to_be_bytes etc. All multi-byte values in UDS are big-endian (network byte order). The service layer handles all byte order conversions explicitly. No unaligned memory access is used. All reads and writes go through safe byte-slice operations.\nArchitecture portability The library is compiled with Cargo’s cross-compilation support. The socketcan and socketcan-isotp crates are gated behind a backend-socketcan feature flag so that Windows and embedded builds do not pull in Linux-specific dependencies. A backend-doip feature flag similarly gates the DoIP backend.\nPython bindings PyO3 + maturin expose the UdsClient and all service methods to Python. Async methods are wrapped with pyo3-asyncio (tokio runtime). The Python API mirrors the Rust API closely so that documentation applies to both.\nCrate Selection Role Crate Reason Protocol definitions own implementation Avoids upstream API dependency; automotive_diag used as reference only Async runtime tokio Industry standard, required by socketcan and doip crates Linux CAN socketcan Mature, async, kernel-native Linux ISO-TP socketcan-isotp Kernel ISO-TP socket, offloads segmentation/flow control DoIP (future) doip-tokio / doip-codec Async DoIP, evaluate at DoIP phase Python bindings pyo3 + maturin Standard Rust/Python bridge Serialisation serde Optional. Useful for logging and test fixtures. It will tie logging to that crate. ecu_diagnostics is excluded as a dependency due to GPL-3.0 license incompatibility with the planned commercial licensing model. However, its source code may be studied as a reference for implementation patterns and service logic, provided no code is directly copied or derived from it.\nOpen Items Client vs server - during kick-off there were questions whether both sides should be covered. Recommendation: client only for the initial scope. Server support can be a later phase. Windows CAN adapter - which hardware adapter must be supported on Windows? This drives the FFI layer design entirely. When is the library needed for CUBE? - Timo mentioned August 2026. DoIP phasing - confirm DoIP is out of scope for the initial implementation project and tracked as a separate item (This was a suggestion). See Delivery Timeline for the full phase plan, milestone schedule, and min/max estimates.\nArchitecture Diagram "
+  });
+  idx.add({
+    id:  6 ,
+    href: "/docs/v1.0.0/en/planning/uds_architecture/",
+    title: "UDS Architecture",
+    description: "Architecture design for the Avant UDS library - layering, backends, crate selection, and Python bindings.",
+    content: "Overview The library is a mostly client-side (tester)(To be further refined on the role during meetings) UDS implementation written in Rust. It targets embedded Linux as the primary platform, with Windows as a secondary target. The design uses a layered architecture so that backends (CAN, DoIP) can be swapped without touching the UDS service layer.\nThe public API is exposed both as a native Rust crate and through Python bindings via PyO3/maturin.\nLayers in Detail UDS Service Layer Implements all required UDS services as typed request/response pairs. Protocol byte definitions, service identifiers, response codes, and NRC (Negative Response Code ) enums, are implemented from scratch within the library rather than imported from an external crate. This avoids taking a hard dependency on a third-party library whose API or data model may change between releases, which would force interface changes up the stack.\nExisting open-source implementations such as automotive_diag are used as verified references during development to cross-check byte values, service encodings, and edge-case behaviour against a known-working baseline. The definitions are our own but the reference material is theirs.\nRequired services:\nService SID Status DiagnosticSessionControl 0x10 agreed ECUReset 0x11 agreed SecurityAccess 0x27 agreed ReadDataByIdentifier 0x22 agreed WriteDataByIdentifier 0x2E agreed RoutineControl 0x31 agreed RequestDownload 0x34 agreed RequestUpload 0x35 agreed TransferData 0x36 agreed RequestTransferExit 0x37 agreed RequestFileTransfer 0x38 agreed TesterPresent 0x3E agreed CommunicationControl 0x28 proposed ControlDTCSetting 0x85 proposed LinkControl 0x87 proposed DTC services are explicitly out of scope.\nEach service is implemented as an async function on a UdsClient struct. Positive and negative responses map to typed Result variants. Negative Response Codes (NRC) are defined as an owned enum within the library.\nUDS Session Manager Tracks the active diagnostic session (Default, Programming, Extended) and automatically sends periodic TesterPresent frames to keep the session alive. Runs as a background tokio task. The session manager is transparent to callers the UdsClient handles it internally (Result on how other crates have implemented it).\nTransport Abstraction A single async trait defines the contract between the UDS layer and any backend. The trait exposes two operations. Sending a raw UDS PDU down to the transport and receiving one back up with no knowledge of what sits below. This boundary is the key design decision that keeps the UDS service layer entirely independent of physical transport details.\nAny type that satisfies the trait can plug in as a backend. For example the Linux SocketCAN+ISO-TP stack, a future Windows FFI adapter, a DoIP socket, or a mock implementation used in unit tests. Swapping the backend requires no changes to the UDS service layer or session manager above it.\nError handling at this boundary distinguishes transport-level failures (frame loss, timeout, bus-off) from UDS-level negative responses, so callers always know which layer a failure came from.\nISO-TP Backend (Linux) Uses socketcan + socketcan-isotp to talk to the kernel’s native ISO-TP socket interface (AF_CAN, SOCK_DGRAM, CAN_ISOTP). This offloads all frame segmentation and flow control to the kernel, which is the most robust approach on Linux.\nThe Linux backend implements UdsTransport directly on top of an async socketcan-isotp socket.\nA userspace ISO-TP implementation where segmentation and flow control are handled in the library rather than the kernel may be considered in a later phase if target environments require it (e.g. older kernels without ISO-TP socket support, or non-Linux POSIX systems). Because the transport trait isolates this layer, switching between kernel and user-space ISO-TP would not affect any code above it. (Action point: assess user-space ISO-TP need based on target hardware during pre-study. Check if older versions of Avnant RCUs do have al the kernel headers for socketcan and offloading on kernel)\nISO-TP Backend (Windows) No mature native Rust solution exists for Windows CAN. Unlike Linux where SocketCAN provides a unified kernel interface, Windows has no common hardware abstraction. Each CAN adapter vendor ships its own SDK and driver. This means the Windows layer will not be a single backend but rather one backend per supported vendor adapter (e.g. PCAN, Kvaser, Vector), each implementing the transport trait independently.\nEach vendor backend integrates against that vendors SDK. The SDK may be written in C, C++, or any other language. What matters is that it can be compiled into a linkable library that Rust can call via FFI. Rust unsafe FFI boundary handles the interop, keeping the rest of the library fully safe. The transport trait ensures none of this vendor specific complexity leaks upward into the UDS service layer.\nThe specific adapter or adapters to support is an open item from the kick-off. This decision must be made before any Windows backend work begins, as it determines which SDKs need to be wrapped.\nDoIP Backend (nice to have) DoIP replaces CAN+ISO-TP with UDP/IP as the physical transport. The UdsTransport trait applies identically. A DoipTransport struct sends and receives UDS PDUs over a DoIP connection. Candidate crates: doip-tokio, doip-codec. Scoped for a later phase after the Linux CAN backend is complete.\nCross-cutting Concerns Endianness Rust standard library provides u16::from_be_bytes / to_be_bytes etc. All multi-byte values in UDS are big-endian (network byte order). The service layer handles all byte order conversions explicitly. No unaligned memory access is used. All reads and writes go through safe byte-slice operations.\nArchitecture portability The library is compiled with Cargo’s cross-compilation support. The socketcan and socketcan-isotp crates are gated behind a backend-socketcan feature flag so that Windows and embedded builds do not pull in Linux-specific dependencies. A backend-doip feature flag similarly gates the DoIP backend.\nPython bindings PyO3 + maturin expose the UdsClient and all service methods to Python. Async methods are wrapped with pyo3-asyncio (tokio runtime). The Python API mirrors the Rust API closely so that documentation applies to both.\nCrate Selection Role Crate Reason Protocol definitions own implementation Avoids upstream API dependency; automotive_diag used as reference only Async runtime tokio Industry standard, required by socketcan and doip crates Linux CAN socketcan Mature, async, kernel-native Linux ISO-TP socketcan-isotp Kernel ISO-TP socket, offloads segmentation/flow control DoIP (future) doip-tokio / doip-codec Async DoIP, evaluate at DoIP phase Python bindings pyo3 + maturin Standard Rust/Python bridge Serialisation serde Optional. Useful for logging and test fixtures. It will tie logging to that crate. ecu_diagnostics is excluded as a dependency due to GPL-3.0 license incompatibility with the planned commercial licensing model. However, its source code may be studied as a reference for implementation patterns and service logic, provided no code is directly copied or derived from it.\nOpen Items Client vs server - during kick-off there were questions whether both sides should be covered. Recommendation: client only for the initial scope. Server support can be a later phase. Windows CAN adapter - which hardware adapter must be supported on Windows? This drives the FFI layer design entirely. When is the library needed for CUBE? - Timo mentioned August 2026. DoIP phasing - confirm DoIP is out of scope for the initial implementation project and tracked as a separate item (This was a suggestion). See Delivery Timeline for the full phase plan, milestone schedule, and min/max estimates.\nArchitecture Diagram "
+  });
+  idx.add({
+    id:  7 ,
+    href: "/docs/v0_0_1/en/meetings/meeting_13_05_2026/",
+    title: "Meeting 13 May 2026",
+    description: "Notes and agenda from the team meeting on 13 May 2026.",
+    content: " "
+  });
+  idx.add({
+    id:  8 ,
+    href: "/docs/v1.0.0/en/meetings/meeting_13_05_2026/",
+    title: "Meeting 13 May 2026",
+    description: "Notes and agenda from the team meeting on 13 May 2026.",
+    content: " "
+  });
+  window.__searchIndex = idx;
+})();
+</script>
+
+	<div class="app-content">
+
+		<div class="app-root__overlay" :class="{ 'is-visible': settingsPanelOpen }" @click="toggleSettingsPanel"></div>
+
+		<div class="app-root__settings-panel" :class="{ 'is-open': settingsPanelOpen }">
+			<div class="settings-drawer" id="settings-drawer" aria-hidden="true">
+
+  <div class="settings-drawer__body">
+    <nav class="settings-drawer__nav">
+          <a class="settings-drawer__link"
+             href="https://avant-tecno-oy.ghe.com/Avant-Tecno-Oy/uds-library" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+          <hr class="settings-drawer__divider">
+          <a class="settings-drawer__link"
+             href="/changelog/">
+            Changelog
+          </a>
+          <a class="settings-drawer__link"
+             href="mailto:support@avant-tecno.com" target="_blank" rel="noopener noreferrer">
+            Support
+          </a>
+    </nav>
+  </div>
+
+  <div class="settings-drawer__footer">
+    <app-dropdown v-if="currentVersion" :items="versionItems" :label="currentVersion" @select="pickVersion"></app-dropdown>
+    <app-dropdown v-if="currentLang" :items="langItems" :label="currentLang" @select="pickLang"></app-dropdown>
+    <app-dropdown class="settings-drawer__theme-picker" :items="themeItems" :label="selectedTheme.label" @select="pick"></app-dropdown>
+    <button class="btn btn--icon btn--soft"
+	aria-label="Toggle colour scheme" @click="toggle"><span class="btn__icon settings-drawer__theme-icon--light"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a7 7 0 1 1 0-14 7 7 0 0 1 0 14zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/>
+</svg>
+</span><span class="btn__icon settings-drawer__theme-icon--dark btn__icon--hidden"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+</svg>
+</span></button>
+
+
+  </div>
+
+</div>
+
+		</div>
+
+		<div class="app-content__docs-nav-panel" :class="{ 'is-open': docsNavOpen }">
+			<button class="btn app-content__docs-nav-toggle btn--icon btn--lg btn--soft"
+	aria-label="Open navigation" @click="toggleDocsNav"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M1.875 1A.875.875 0 0 0 1 1.875v12.25a.875.875 0 0 0 1.75 0V1.875A.875.875 0 0 0 1.875 1Zm6.899.867a.875.875 0 0 0-.03 1.237l3.837 4.021H5.875a.875.875 0 1 0 0 1.75h6.638L8.76 12.632a.875.875 0 1 0 1.238 1.236l5.247-5.25a.873.873 0 0 0 .014-1.222l-5.247-5.5a.875.875 0 0 0-1.237-.03Z"/>
+</svg>
+</button>
+
+			<nav class="docs-nav" id="docs-nav" aria-label="Documentation navigation">
+
+  <div class="docs-nav__inner"><docs-nav-group label="Planning" :initial-open="true"><li class="docs-nav__item">
+              <a href="/docs/v0_0_1/en/planning/delivery_timeline/"
+                 class="docs-nav__link docs-nav__link--active">
+                Delivery Timeline
+              </a>
+            </li><li class="docs-nav__item">
+              <a href="/docs/v0_0_1/en/planning/existing_libraries/"
+                 class="docs-nav__link">
+                Existing UDS Libraries
+              </a>
+            </li><li class="docs-nav__item">
+              <a href="/docs/v0_0_1/en/planning/uds_architecture/"
+                 class="docs-nav__link">
+                UDS Architecture
+              </a>
+            </li></docs-nav-group><docs-nav-group label="Meetings" :initial-open="false"><li class="docs-nav__item">
+              <a href="/docs/v0_0_1/en/meetings/meeting_13_05_2026/"
+                 class="docs-nav__link">
+                Meeting 13 May 2026
+              </a>
+            </li></docs-nav-group></div>
+</nav>
+
+		</div>
+
+		<div class="app-content__body" :class="{ 'is-nav-open': docsNavOpen }"
+			ref="bodyEl" @scroll="onBodyScroll">
+			<main class="docs-main">
+
+  <article class="doc">
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+	<ol class="breadcrumbs__list">
+
+		<li class="breadcrumbs__item">
+			<a class="breadcrumbs__link breadcrumbs__link--home" href="/" aria-label="Home">
+				<svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+					<path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z"/>
+				</svg>
+			</a>
+		</li>
+			<li class="breadcrumbs__item">
+				<a class="breadcrumbs__link" href="/docs/v0_0_1/">v0.0.1</a>
+			</li>
+			<li class="breadcrumbs__item">
+				<a class="breadcrumbs__link" href="/docs/v0_0_1/en/">English</a>
+			</li>
+			<li class="breadcrumbs__item">
+				<a class="breadcrumbs__link" href="/docs/v0_0_1/en/planning/">Planning</a>
+			</li>
+
+		<li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">
+			<span>Delivery Timeline</span>
+		</li>
+
+	</ol>
+</nav>
+
+    <header class="doc__header">
+      <h1 class="doc__title">Delivery Timeline</h1>
+        <p class="doc__lead">Development phases, milestone schedule, and min/max delivery estimates for the Avant UDS library.</p>
+    </header>
+
+    <div class="doc__body">
+      <h2 id="phases" class="heading">Phases<a href="#phases" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h2>
+<h3 id="phase-1---pre-study" class="heading">Phase 1 - Pre-study<a href="#phase-1---pre-study" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h3>
+<p><strong>Target: w20-w24 (13 May - 13 June 2026) (some team members are in vacations so not the whole period is used)</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Task</th>
+          <th>Notes</th>
+          <th>Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Review existing Rust libraries</td>
+          <td>automotive_diag, ecu_diagnostics, automotive (I-CAN-hack)</td>
+          <td>in progress</td>
+      </tr>
+      <tr>
+          <td>Confirm requirements and service list</td>
+          <td>Resolve proposed vs agreed services with Avant</td>
+          <td>in progress</td>
+      </tr>
+      <tr>
+          <td>Finalize architecture and interface design</td>
+          <td>Transport trait, layer boundaries, feature flags</td>
+          <td>in progress</td>
+      </tr>
+      <tr>
+          <td>Assess user-space ISO-TP need</td>
+          <td>Check kernel version on Avant RCU hardware</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Resolve Windows CAN adapter open item</td>
+          <td>Which vendor SDKs must be wrapped</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Resolve client vs server scope</td>
+          <td>Recommendation clientonly for initial scope</td>
+          <td>not started</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="phase-2---core-implementation-linux-target" class="heading">Phase 2 - Core Implementation (Linux target)<a href="#phase-2---core-implementation-linux-target" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h3>
+<p><strong>Target: w26-w32 (22 June - 7 August 2026)</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Task</th>
+          <th>Notes</th>
+          <th>Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Repository setup</td>
+          <td>GitHub, Cargo workspace, feature flags</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Protocol layer</td>
+          <td>Service definitions, NRC enum, request/response types</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>UDS session manager</td>
+          <td>Session state machine, TesterPresent heartbeat task</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Transport abstraction trait</td>
+          <td>Send/receive PDU interface, error type separation</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Linux ISO-TP backend</td>
+          <td>socketcan + socketcan-isotp, async tokio integration</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Mock transport</td>
+          <td>For unit testing without hardware</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Unit and integration tests</td>
+          <td>Virtual CAN (vcan) on Linux for CI</td>
+          <td>not started</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="phase-3---python-bindings" class="heading">Phase 3 - Python Bindings<a href="#phase-3---python-bindings" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h3>
+<p><strong>Target: w33-w36 (10 August - 4 September 2026) - ~4 weeks</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Task</th>
+          <th>Notes</th>
+          <th>Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>PyO3 + maturin project setup</td>
+          <td>Build pipeline for Python wheel</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Bind UdsClient and all agreed services</td>
+          <td>Async methods via pyo3-asyncio</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Python-level error types</td>
+          <td>Map Rust error variants to Python exceptions</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Basic Python usage test</td>
+          <td>Smoke test against vcan or real hardware</td>
+          <td>not started</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="phase-4---hardening-and-documentation" class="heading">Phase 4 - Hardening and Documentation<a href="#phase-4---hardening-and-documentation" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h3>
+<p><strong>Target: w34-w37 (August - September 2026)</strong></p>
+<p>These tasks improve quality and maintainability but do not block the Cube product from using the library.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Task</th>
+          <th>Notes</th>
+          <th>Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Edge case handling</td>
+          <td>Session timeout recovery, NRC 0x78 response pending retry</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Endianness and multi-arch validation</td>
+          <td>Test on multi ARM target if available</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Full API documentation</td>
+          <td>Rust doc comments, Python usage guide</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Extended integration tests</td>
+          <td>Real hardware test scenarios</td>
+          <td>not started</td>
+      </tr>
+      <tr>
+          <td>Final review with Avant</td>
+          <td>Hand over on completed library</td>
+          <td>not started</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="phase-5---windows-backend" class="heading">Phase 5 - Windows Backend<a href="#phase-5---windows-backend" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h3>
+<p><strong>Target: w35+</strong></p>
+<p>Depends on resolution of the open item. Which CAN adapter vendor to support on Windows. Each vendor requires a separate backend wrapping their SDK via Rust FFI. Cannot be planned in detail until the adapter decision is made.</p>
+<hr>
+<h3 id="phase-6---doip-backend-nice-to-have" class="heading">Phase 6 - DoIP Backend <em>(nice to have)</em><a href="#phase-6---doip-backend-nice-to-have" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h3>
+<p><strong>Target: TBD</strong></p>
+<p>Scoped as a future phase. Requires DoIP crate evaluation (<code>doip-tokio</code>, <code>doip-codec</code>) and a DoIP-capable test environment. Avant need to decide.</p>
+<hr>
+<h2 id="min--max-estimates" class="heading">Min / Max Estimates<a href="#min--max-estimates" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h2>
+<h3 id="minimum-optimistic" class="heading">Minimum (optimistic)<a href="#minimum-optimistic" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Milestone</th>
+          <th>Date</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Pre-study complete</td>
+          <td>w24 - 13 June 2026</td>
+      </tr>
+      <tr>
+          <td>Core Linux implementation done</td>
+          <td>w30 - 25 July 2026</td>
+      </tr>
+      <tr>
+          <td>Python bindings done</td>
+          <td>w35 - 29 August 2026</td>
+      </tr>
+      <tr>
+          <td>Hardening and full docs done</td>
+          <td>w37 - 11 September 2026</td>
+      </tr>
+      <tr>
+          <td>Windows backend (1st vendor)</td>
+          <td>w40 - early October 2026</td>
+      </tr>
+      <tr>
+          <td>DoIP backend</td>
+          <td>TBD</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="maximum-conservative" class="heading">Maximum (conservative)<a href="#maximum-conservative" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Milestone</th>
+          <th>Date</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Pre-study complete</td>
+          <td>w25 - 20 June 2026</td>
+      </tr>
+      <tr>
+          <td>Core Linux implementation done</td>
+          <td>w32 - 7 August 2026</td>
+      </tr>
+      <tr>
+          <td>Python bindings done</td>
+          <td>w36 - 4 September 2026</td>
+      </tr>
+      <tr>
+          <td>Hardening and full docs done</td>
+          <td>w38 - 18 September 2026</td>
+      </tr>
+      <tr>
+          <td>Windows backend (1st vendor)</td>
+          <td>w43 - late October 2026</td>
+      </tr>
+      <tr>
+          <td>DoIP backend</td>
+          <td>TBD</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="risks" class="heading">Risks<a href="#risks" class="heading__anchor" aria-label="Link to this section" tabindex="-1">
+    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0z"/>
+    </svg>
+  </a>
+</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Risk</th>
+          <th>Impact</th>
+          <th>Mitigation</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Windows CAN adapter not decided</td>
+          <td>Blocks Windows phase entirely</td>
+          <td>Resolve in pre-study.</td>
+      </tr>
+      <tr>
+          <td>Avant RCU kernel too old for socketcan-isotp</td>
+          <td>Forces userspace ISO-TP implementation, +2-3 weeks</td>
+          <td>Assess kernel version in pre-study phase</td>
+      </tr>
+      <tr>
+          <td>Scope expansion (server side, DTC)</td>
+          <td>Delays core delivery</td>
+          <td>Keep initial scope to client-only. Defer formally in pre-study review. Most libs have only client side implementation adding on top only the required server side handlers.</td>
+      </tr>
+      <tr>
+          <td>PyO3/tokio async integration complexity</td>
+          <td>+1-2 weeks</td>
+          <td>Prototype pyo3-asyncio early in Phase 3</td>
+      </tr>
+      <tr>
+          <td>Rust cross-compilation issues on target HW</td>
+          <td>+1 week</td>
+          <td>Test crosscompile to ARM target early in Phase 2</td>
+      </tr>
+  </tbody>
+</table>
+
+    </div>
+      <nav class="doc-nav">
+          <a class="doc-nav__item doc-nav__item--prev" href="/docs/v1.0.0/en/planning/code-examples/">
+            <span class="doc-nav__arrow">←</span>
+            <span class="doc-nav__title">Code Examples</span>
+          </a>
+          <a class="doc-nav__item doc-nav__item--next" href="/docs/v1.0.0/en/planning/delivery_timeline/">
+            <span class="doc-nav__title">Delivery Timeline</span>
+            <span class="doc-nav__arrow">→</span>
+          </a>
+      </nav>
+
+  </article>
+
+</main>
+
+			<button class="btn back-to-top btn--icon btn--soft btn--outlined"
+	aria-label="Back to top" @click="scrollToTop" v-show="showBackToTop"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 13l6-6 6 6"/>
+</svg>
+</button>
+
+		</div>
+	</div>
+</div>
+<footer class="docs-footer">
+  <div class="docs-footer__copy">
+    © 2026 Avant Tecno Oy. All rights reserved.
+  </div>
+
+  <div class="docs-footer__links">
+    <a class="docs-footer__link" href="https://avant-tecno-oy.ghe.com/Avant-Tecno-Oy" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
+      </svg>
+    </a>
+    <a class="docs-footer__link" href="https://avant-tecno-oy.ghe.com/Avant-Tecno-Oy/uds-library" target="_blank" rel="noopener noreferrer" aria-label="Repository">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="16 18 22 12 16 6"/>
+        <polyline points="8 6 2 12 8 18"/>
+      </svg>
+    </a>
+  </div>
+</footer>
+
+
+
+
+    
+<script type="text/x-template" id="app-dropdown">
+  <div class="dropdown"
+       :data-dropdown-open-value="open ? 'true' : 'false'"
+       :class="{ 'dropdown--placement-up': placementUp, 'dropdown--placement-right': placementRight }">
+    <button class="dropdown__trigger"
+            type="button"
+            aria-haspopup="listbox"
+            :aria-expanded="open ? 'true' : 'false'"
+            :disabled="items.length <= 1"
+            @click="toggleOpen">
+      <span class="dropdown__label" v-text="label"></span>
+      <svg class="dropdown__chevron" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </button>
+    <ul class="dropdown__menu" role="listbox">
+      <li v-for="item in items"
+          :key="item.value"
+          class="dropdown__option"
+          :class="{ 'dropdown__option--active': item.active }"
+          role="option"
+          @click="onSelect(item)"
+          v-text="item.label">
+      </li>
+    </ul>
+  </div>
+</script>
+
+<script type="text/x-template" id="docs-nav-group">
+  <div class="docs-nav__group">
+    <button class="docs-nav__group-btn" :class="{ 'docs-nav__group-btn--open': open }"
+            :aria-expanded="String(open)" @click="open = !open">
+      <span class="docs-nav__group-label" v-text="label"></span>
+      <svg class="docs-nav__group-chevron" viewBox="0 0 16 16" fill="none"
+           stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </button>
+    <ul class="docs-nav__list" :class="{ 'docs-nav__list--open': open }">
+      <div class="docs-nav__list-inner">
+        <slot></slot>
+      </div>
+    </ul>
+  </div>
+</script>
+
+
+
+    <script>
+      window.__NTI_THEMES__          = [{"dark":false,"default":true,"id":"light","label":"Light"},{"dark":true,"default":false,"id":"dark","label":"Dark"},{"dark":false,"default":false,"id":"light-hc","label":"Light HC"},{"dark":false,"default":false,"id":"light-mc","label":"Light MC"},{"dark":true,"default":true,"id":"dark-hc","label":"Dark HC"},{"dark":true,"default":false,"id":"dark-mc","label":"Dark MC"}];
+      window.__NTI_VERSION_ITEMS__   = [{"active":true,"label":"v0.0.1","langs":[{"active":true,"label":"EN","value":"en"}],"value":"v0_0_1"},{"active":false,"label":"v1.0.0","langs":[{"active":true,"label":"EN","value":"en"}],"value":"v1.0.0"}];
+      window.__NTI_CURRENT_VERSION__ = "v0_0_1";
+      window.__NTI_CURRENT_LANG__    = "en";
+    </script>
+
+    <script src="/js/vue.global.prod.js" defer></script><script src="/docs/js/app.min.c01e35192370d41afa826604f7743a271703c7947b6feef27bae5270c19e279df134ad3753689c517faf519031c3f894.js" integrity="sha384-wB41GSNw1Br6gmYE93Q6JxcDx5R7b&#43;7ye65ScMGeJ53xNK03U2icUX&#43;vUZAxw/iU" crossorigin="anonymous" defer></script><script src="/docs/js/layouts/docs/_markup/codeblock.min.dbf3e8fbfa82fadb2bd4f6c37b5af889c15b6ab0803729047d4c5a2dbde52e5a2c85e02c6e9c65118a00eca015323c0b.js" integrity="sha384-2/Po&#43;/qC&#43;tsr1PbDe1r4icFbarCANykEfUxaLb3lLlosheAsbpxlEYoA7KAVMjwL" crossorigin="anonymous" defer></script><script src="/docs/js/layouts/partials/docs/search.min.70fd780a225df3e9b3fac9bd9a8e7a9ffb74cc8dbad76406a9e17436d00385ced53663053482b369c76cab4950042fec.js" integrity="sha384-cP14CiJd8&#43;mz&#43;sm9mo56n/t0zI2612QGqeF0NtADhc7VNmMFNIKzacdsq0lQBC/s" crossorigin="anonymous" defer></script>
+
+  </body>
+</html>

@@ -1,0 +1,87 @@
+{{- $site    := os.ReadFile "site.yaml" | transform.Unmarshal -}}
+{{- $parts   := split .RelPermalink "/" -}}
+{{- $version := index $parts 2 -}}
+{{- $lang    := index $parts 3 -}}
+
+{{- $versionItems := slice -}}
+{{- range (readDir "content/docs") -}}
+  {{- if .IsDir -}}
+    {{- $v      := .Name -}}
+    {{- $vLangs := slice -}}
+    {{- range (readDir (printf "content/docs/%s" $v)) -}}
+      {{- if .IsDir -}}
+        {{- $vLangs = $vLangs | append (dict
+          "label"  (upper .Name)
+          "value"  .Name
+          "active" (eq .Name $lang)
+        ) -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $versionItems = $versionItems | append (dict
+      "label"  (replace $v "_" ".")
+      "value"  $v
+      "active" (eq $v $version)
+      "langs"  $vLangs
+    ) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $ctx := dict
+  "page"         .
+  "site"         $site
+  "version"      $version
+  "lang"         $lang
+  "versionItems" $versionItems
+-}}
+
+<!DOCTYPE html>
+<html lang="{{ $lang }}" data-theme="light">
+  {{- partial "docs/head.gohtml" $ctx -}}
+  <body>
+
+    {{ block "main" $ctx }}{{ end }}
+    {{ block "vue-templates" . }}{{ end }}
+
+    <script>
+      window.__NTI_THEMES__          = {{ $site.themes   | jsonify | safeJS }};
+      window.__NTI_VERSION_ITEMS__   = {{ $versionItems  | jsonify | safeJS }};
+      window.__NTI_CURRENT_VERSION__ = {{ $version       | jsonify | safeJS }};
+      window.__NTI_CURRENT_LANG__    = {{ $lang          | jsonify | safeJS }};
+    </script>
+
+    <script src="{{ "js/vue.global.prod.js" | relURL }}" defer></script>
+
+    {{- $appJS := resources.Get "docs/js/app.ts" | js.Build -}}
+    {{- if hugo.IsProduction -}}{{- $appJS = $appJS | minify | fingerprint "sha384" -}}{{- end -}}
+    <script src="{{ $appJS.RelPermalink }}"{{ if hugo.IsProduction }} integrity="{{ $appJS.Data.Integrity }}" crossorigin="anonymous"{{ end }} defer></script>
+
+    {{- $codeblockJS := resources.Get "docs/js/layouts/docs/_markup/codeblock.ts" | js.Build -}}
+    {{- if hugo.IsProduction -}}{{- $codeblockJS = $codeblockJS | minify | fingerprint "sha384" -}}{{- end -}}
+    <script src="{{ $codeblockJS.RelPermalink }}"{{ if hugo.IsProduction }} integrity="{{ $codeblockJS.Data.Integrity }}" crossorigin="anonymous"{{ end }} defer></script>
+
+    {{- $searchJS := resources.Get "docs/js/layouts/partials/docs/search.js" -}}
+    {{- if hugo.IsProduction -}}{{- $searchJS = $searchJS | minify | fingerprint "sha384" -}}{{- end -}}
+    <script src="{{ $searchJS.RelPermalink }}"{{ if hugo.IsProduction }} integrity="{{ $searchJS.Data.Integrity }}" crossorigin="anonymous"{{ end }} defer></script>
+
+    {{- if .Store.Get "hasDrawio" }}
+    <script src="{{ "docs/js/drawio-viewer-static.min.js" | relURL }}" defer></script>
+    {{- end }}
+
+    {{- if .Store.Get "hasPDF" }}
+    <script src="{{ "docs/js/pdfobject.min.js" | relURL }}" defer></script>
+    <script>
+      window.addEventListener('load', function() {
+        (window._pdfEmbeds || []).forEach(function(e){ PDFObject.embed(e[0], e[1]); });
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            document.querySelectorAll('.pdf-embed__modal--open').forEach(function(m) {
+              m.classList.remove('pdf-embed__modal--open');
+            });
+          }
+        });
+      });
+    </script>
+    {{- end }}
+
+  </body>
+</html>

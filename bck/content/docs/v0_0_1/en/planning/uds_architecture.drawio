@@ -1,0 +1,64 @@
+<mxfile host="65bd71144e">
+    <diagram id="uds-arch" name="UDS Library Architecture">
+        <mxGraphModel dx="800" dy="439" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="Avant UDS Library Layered Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="15" width="800" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="app" value="&lt;b&gt;Application / Python&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5a6b7a&quot;&gt;PyO3 + maturin Python bindings expose UdsClient and all service methods via pyo3-asyncio (tokio runtime)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="60" width="800" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="arr1" style="edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="app" target="uds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uds" value="&lt;b&gt;UDS Service Layer&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5a6b7a&quot;&gt;DiagnosticSessionControl&amp;nbsp; ECUReset&amp;nbsp; SecurityAccess&amp;nbsp; ReadDataByIdentifier&amp;nbsp; WriteDataByIdentifier&amp;nbsp; RoutineControl&lt;br&gt;RequestDownload&amp;nbsp; RequestUpload&amp;nbsp; TransferData&amp;nbsp; RequestTransferExit&amp;nbsp; RequestFileTransfer&amp;nbsp; TesterPresent&lt;br&gt;&lt;i&gt;Protocol definitions sourced from automotive_diag crate (MIT / Apache-2.0)&lt;/i&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="130" width="800" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="arr2" style="edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uds" target="session" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="session" value="&lt;b&gt;UDS Session Manager&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5a6b7a&quot;&gt;Tracks active session state (Default / Programming / Extended). Sends TesterPresent heartbeat as background tokio task. Transparent to callers&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="225" width="800" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="arr3" style="edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="session" target="transport" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="transport" value="&lt;b&gt;Transport Abstraction (Rust Trait)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5a6b7a&quot;&gt;&lt;i&gt;async fn send(&amp;amp;mut self, data: &amp;amp;[u8]) → Result&amp;lt;&amp;gt;&lt;/i&gt;&amp;nbsp;&amp;nbsp;·&amp;nbsp;&amp;nbsp;&lt;i&gt;async fn receive(&amp;amp;mut self) → Result&amp;gt;&lt;/i&gt;&lt;br&gt;Any type implementing this trait can serve as transport. Enables mock transport for unit testing&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="295" width="800" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arr4a" style="exitX=0.159;exitY=0.992;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitPerimeter=0;" parent="1" source="transport" target="isotp-linux" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arr4b" style="edgeStyle=orthogonalEdgeStyle;exitX=0.839;exitY=1.005;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitPerimeter=0;" parent="1" source="transport" target="isotp-windows" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="isotp-linux" value="&lt;b&gt;ISO-TP Backend Linux&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5a6b7a&quot;&gt;socketcan-isotp&lt;br&gt;Kernel ISO-TP socket (AF_CAN SOCK_DGRAM CAN_ISOTP)&lt;br&gt;Offloads segmentation and flow control to kernel&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="375" width="255" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="arr5a" style="edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="isotp-linux" target="can-linux" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="isotp-windows" value="&lt;b&gt;ISO-TP Backend Windows&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5a6b7a&quot;&gt;Vendor C library via FFI&lt;br&gt;CAN adapter TBD open item&lt;br&gt;(PCAN / Kvaser / Vector)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;verticalAlign=middle;dashed=1;dashPattern=8 8;" parent="1" vertex="1">
+                    <mxGeometry x="594" y="375" width="255" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="arr5b" style="edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;" parent="1" source="isotp-windows" target="can-windows" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="can-linux" value="&lt;b&gt;Linux( SocketCAN)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5a6b7a&quot;&gt;socketcan crate · tokio async&lt;br&gt;CAN + CAN-FD/ AF_CAN kernel interface&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="465" width="255" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="can-windows" value="&lt;b&gt;Windows (Vendor Driver)&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#5a6b7a&quot;&gt;Adapter-specific C library&lt;br&gt;FFI bindings (TBD)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;verticalAlign=middle;dashed=1;dashPattern=8 8;" parent="1" vertex="1">
+                    <mxGeometry x="594" y="465" width="255" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="badge-linux" value="✓ Primary target" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#336600;fontStyle=3;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="530" width="255" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="badge-windows" value="⚠ Adapter TBD (open item)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;fontColor=#996600;fontStyle=3;" parent="1" vertex="1">
+                    <mxGeometry x="594" y="540" width="255" height="18" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

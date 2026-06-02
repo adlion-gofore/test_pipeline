@@ -1,0 +1,41 @@
+@use '../../../mixins' as mx;
+
+.app-root__settings-panel {
+  position: absolute;
+  inset: 0;
+  z-index: var(--nti-z-menu-panel);
+  background: var(--md-sys-color-surface-container-low);
+  overflow: hidden;
+
+  // Closed: slid out → then collapsed → then faded
+  width: 0;
+  opacity: 0;
+  transform: translateX(100%);
+  transition:
+    transform 200ms ease,
+    opacity   100ms ease,
+    width     0s    linear 200ms;
+
+  &.is-open {
+    // Open: expand instantly → slide in → fade in
+    width: 100%;
+    opacity: 1;
+    transform: translateX(0);
+    transition:
+      width     0s    linear,
+      opacity   150ms ease,
+      transform 200ms ease;
+  }
+}
+
+// ── Breakpoints ───────────────────────────────────────────────────────────────
+
+@include mx.sm {
+  .app-root__settings-panel {
+    inset: 0 0 0 auto;
+  }
+
+  .app-root__settings-panel.is-open {
+    width: 25rem;
+  }
+}

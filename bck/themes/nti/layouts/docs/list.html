@@ -1,0 +1,59 @@
+{{ define "vue-templates" }}
+{{ partial "ui/dropdown.gohtml" . }}
+{{ end }}
+
+{{ define "main" }}
+<div class="app-root" data-vue-app="app-root" v-cloak>
+  <div class="app-loader" aria-label="Loading" role="status">
+    <div class="app-loader__spinner"></div>
+  </div>
+  {{ partial "docs/topbar.gohtml" . }}
+  {{ partial "docs/search.gohtml" . }}
+  <div class="app-content">
+
+    <div class="app-root__overlay" :class="{ 'is-visible': settingsPanelOpen }" @click="toggleSettingsPanel"></div>
+
+    <div class="app-root__settings-panel" :class="{ 'is-open': settingsPanelOpen }">
+      {{ partial "docs/settings-drawer.gohtml" . }}
+    </div>
+
+    <main class="docs-list">
+      <h1 class="docs-list__title">{{ if .page.Title }}{{ .page.Title }}{{ else }}Documentation{{ end }}</h1>
+      <hr class="docs-list__sep" />
+      <div class="docs-list__grid">
+        {{- range .page.Sections -}}
+          <a href="{{ .RelPermalink }}" class="docs-list__card{{ if .Draft }} docs-list__card--draft{{ end }}">
+            <div class="docs-list__card-header">
+              <svg class="docs-list__card-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+              </svg>
+              <span class="docs-list__card-title">{{ .Title }}</span>
+              {{- if .Draft -}}<span class="docs-list__card-draft-badge">Draft</span>{{- end -}}
+            </div>
+            {{- with .Description -}}
+              <hr class="docs-list__card-sep" />
+              <span class="docs-list__card-desc">{{ . }}</span>
+            {{- end -}}
+          </a>
+        {{- end -}}
+        {{- range .page.RegularPages -}}
+          <a href="{{ .RelPermalink }}" class="docs-list__card{{ if .Draft }} docs-list__card--draft{{ end }}">
+            <div class="docs-list__card-header">
+              <svg class="docs-list__card-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
+              </svg>
+              <span class="docs-list__card-title">{{ .Title }}</span>
+              {{- if .Draft -}}<span class="docs-list__card-draft-badge">Draft</span>{{- end -}}
+            </div>
+            {{- with .Description -}}
+              <hr class="docs-list__card-sep" />
+              <span class="docs-list__card-desc">{{ . }}</span>
+            {{- end -}}
+          </a>
+        {{- end -}}
+      </div>
+    </main>
+  </div>
+</div>
+{{ partial "docs/footer.gohtml" . }}
+{{ end }}

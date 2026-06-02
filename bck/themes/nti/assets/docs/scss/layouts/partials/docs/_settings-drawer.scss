@@ -1,0 +1,46 @@
+.settings-drawer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__body {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  &__nav {
+    display: flex;
+    flex-direction: column;
+    padding: var(--nti-space-2) 0;
+  }
+
+  &__link {
+    padding: var(--nti-space-3) var(--nti-space-4);
+    color: var(--md-sys-color-on-surface);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    transition: background 150ms ease;
+
+    &:hover {
+      background: var(--md-sys-color-surface-container);
+    }
+  }
+
+  &__divider {
+    margin: var(--nti-space-2) var(--nti-space-4);
+    border: none;
+    border-top: var(--nti-border) solid var(--md-sys-color-outline-variant);
+  }
+
+&__theme-picker {
+  min-width: 7rem;
+}
+  &__footer {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--nti-space-2);
+    padding: var(--nti-space-4);
+    border-top: var(--nti-border) solid var(--md-sys-color-outline-variant);
+  }
+}

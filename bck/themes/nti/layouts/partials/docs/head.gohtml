@@ -1,0 +1,83 @@
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>window.__NTI_THEMES__ = {{ .site.themes | jsonify | safeJS }};</script>
+  <script>
+    (function () {
+      var stored = localStorage.getItem("nti-themes");
+      var id;
+      if (stored) {
+        try { id = JSON.parse(stored).find(function (t) { return t.selected; })?.id; } catch (_) {}
+      }
+      if (!id) {
+        var isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var themes = window.__NTI_THEMES__ || [];
+        var def = themes.find(function (t) { return t.dark === isDark && t.default; })
+               || themes.find(function (t) { return t.dark === isDark; })
+               || themes.find(function (t) { return !t.dark; })
+               || themes[0];
+        id = def ? def.id : (isDark ? "dark" : "light");
+      }
+      document.documentElement.setAttribute("data-theme", id);
+    })();
+  </script>
+  <style>
+    [v-cloak]{visibility:hidden}
+    .app-loader{display:none}
+    [v-cloak] .app-loader{
+      visibility:visible;
+      display:flex;
+      position:fixed;
+      inset:0;
+      align-items:center;
+      justify-content:center;
+      background:rgb(255 248 246);
+    }
+    [data-theme^="dark"] [v-cloak] .app-loader{background:rgb(26 17 15)}
+    .app-loader__spinner{
+      width:2rem;
+      height:2rem;
+      border-radius:50%;
+      border:2px solid rgba(143,76,56,0.2);
+      border-top-color:rgb(143 76 56);
+      animation:_nti-spin 0.7s linear infinite;
+    }
+    [data-theme^="dark"] .app-loader__spinner{
+      border-color:rgba(255,181,159,0.2);
+      border-top-color:rgb(255 181 159);
+    }
+    @keyframes _nti-spin{to{transform:rotate(360deg)}}
+  </style>
+
+{{- $opts := dict "transpiler" "dartsass" "enableSourceMap" true -}}
+{{- if hugo.IsProduction -}}{{- $opts = dict "transpiler" "dartsass" "enableSourceMap" false "outputStyle" "compressed" -}}{{- end -}}
+{{- $css := resources.Get "docs/scss/main.scss" | css.Sass $opts -}}
+{{- if hugo.IsProduction -}}{{- $css = $css | minify | fingerprint "sha384" -}}{{- end -}}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}"{{ if hugo.IsProduction }} integrity="{{ $css.Data.Integrity }}" crossorigin="anonymous"{{ end }} />
+
+{{- range .site.themes }}
+	<link rel="stylesheet" href="{{ printf "docs/css/theme-%s.css" .id | relURL }}" />
+{{- end }}
+<link rel="stylesheet" href="{{ "docs/css/theme-syntax.css" | relURL }}" />
+
+
+
+<title>
+	{{- $page := .page -}}
+	{{- if eq $page.RelPermalink "/" -}}{{ .site.title }}{{- else -}}{{ $page.Title }} | {{ .site.title }}{{- end -}}
+</title>
+
+{{- with .page.Description | default (.page.Param "description") }}
+	<meta name="description" content="{{ . }}" />
+{{- end }}
+{{- if not hugo.IsProduction }}
+	<meta name="robots" content="noindex" />
+{{- end }}
+
+<!-- Favicon -->
+<link rel="icon" href="{{ .site.favicon }}" />
+
+<!-- Font preload -->
+<link rel="preload" href="/docs/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin />
+
+</head>

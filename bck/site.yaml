@@ -1,0 +1,54 @@
+title: "Avant Docs"
+description: "Official documentation for Avant Tecno UDS Library."
+logo: "/docs/media/svg/logo.svg"
+favicon: "/docs/media/svg/favicon.svg"
+defaultLanguage: "en"
+
+themes:
+  - id: light
+    label: Light
+    dark: false
+    default: true
+  - id: dark
+    label: Dark
+    dark: true
+    default: false
+  - id: light-hc
+    label: Light HC
+    dark: false
+    default: false
+  - id: light-mc
+    label: Light MC
+    dark: false
+    default: false
+  - id: dark-hc
+    label: Dark HC
+    dark: true
+    default: true
+  - id: dark-mc
+    label: Dark MC
+    dark: true
+    default: false
+
+menu:
+  links:
+    - label: "GitHub"
+      url: "https://avant-tecno-oy.ghe.com/Avant-Tecno-Oy/uds-library"
+      external: true
+      type: link
+    - type: divider
+    - label: "Changelog"
+      url: "/changelog/"
+      type: link
+    - label: "Support"
+      url: "mailto:support@avant-tecno.com"
+      external: true
+      type: link
+
+footer:
+  copyright: "© :YEAR: Avant Tecno Oy. All rights reserved."
+  repoUrl: "https://avant-tecno-oy.ghe.com/Avant-Tecno-Oy/uds-library"
+  social:
+    - name: "GitHub"
+      icon: "github"
+      url: "https://avant-tecno-oy.ghe.com/Avant-Tecno-Oy"

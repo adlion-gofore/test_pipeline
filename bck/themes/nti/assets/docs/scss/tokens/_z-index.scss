@@ -1,0 +1,15 @@
+:root {
+  --nti-z-0:    0;
+  --nti-z-10:   10;
+  --nti-z-20:   20;
+  --nti-z-30:   30;
+  --nti-z-40:   40;
+  --nti-z-50:   50;
+  --nti-z-auto: auto;
+
+  // ── App-root scope (isolation: isolate) ──────────────────────────
+  --nti-z-docs-nav-panel:   1;
+  --nti-z-docs-nav-toggle:  2;
+  --nti-z-overlay:          3;
+  --nti-z-menu-panel:       4;
+}

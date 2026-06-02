@@ -1,0 +1,91 @@
+.dropdown {
+  position: relative;
+
+  // ── Trigger ──────────────────────────────────────────────────────
+  &__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--nti-space-1);
+    padding: var(--nti-space-1) var(--nti-space-2);
+    background: transparent;
+    border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--nti-radius-md);
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease;
+
+    &:hover {
+      background: var(--md-sys-color-surface-container);
+      border-color: var(--md-sys-color-outline);
+    }
+  }
+
+  &__label {
+    white-space: nowrap;
+  }
+
+  &__chevron {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    transition: transform 150ms ease;
+  }
+
+  &[data-dropdown-open-value="true"] &__chevron {
+    transform: rotate(180deg);
+  }
+
+  // ── Menu ─────────────────────────────────────────────────────────
+  &__menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + var(--nti-space-1));
+    left: 0;
+    min-width: 100%;
+    margin: 0;
+    padding: var(--nti-space-1) 0;
+    list-style: none;
+    background: var(--md-sys-color-surface-container-low);
+    border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--nti-radius-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    z-index: 10;
+  }
+
+  &[data-dropdown-open-value="true"] &__menu {
+    display: block;
+  }
+
+  // ── Placement: up ────────────────────────────────────────────────
+  &--placement-up &__menu {
+    top: auto;
+    bottom: calc(100% + var(--nti-space-1));
+  }
+
+  // ── Placement: right-aligned ─────────────────────────────────────
+  &--placement-right &__menu {
+    left: auto;
+    right: 0;
+  }
+
+  // ── Option ───────────────────────────────────────────────────────
+  &__option {
+    padding: var(--nti-space-2) var(--nti-space-3);
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface);
+    cursor: pointer;
+    transition: background 100ms ease;
+
+    &:hover {
+      background: var(--md-sys-color-surface-container);
+    }
+
+    &--active {
+      color: var(--md-sys-color-primary);
+      font-weight: 500;
+    }
+  }
+}

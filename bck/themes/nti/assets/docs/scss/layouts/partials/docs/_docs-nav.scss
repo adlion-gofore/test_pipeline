@@ -1,0 +1,137 @@
+@use "../../../mixins" as mx;
+
+.docs-nav {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  // ── Scrollable content ─────────────────────────────────────────
+  &__inner {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--nti-space-1) 0 var(--nti-space-16);
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+
+    &:hover {
+      scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+    }
+  }
+
+  // ── Group (section) ───────────────────────────────────────────
+  &__group {
+    margin-bottom: var(--nti-space-1);
+  }
+
+  &__group-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--nti-space-2) var(--nti-space-4);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface-variant);
+    gap: var(--nti-space-2);
+
+    &:hover {
+      color: var(--md-sys-color-on-surface);
+    }
+
+    &--open {
+      color: var(--md-sys-color-on-surface);
+
+      .docs-nav__group-chevron {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &__group-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    flex: 1;
+    text-align: left;
+  }
+
+  &__group-chevron {
+    width: 1.125em;
+    height: 1.125em;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  // ── List ──────────────────────────────────────────────────────
+  &__list {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.2s ease;
+    list-style: none;
+    margin: 0;
+
+    &--open {
+      grid-template-rows: 1fr;
+    }
+  }
+
+  &__list-inner {
+    overflow: hidden;
+    min-height: 0;
+    padding: 0;
+    transition: padding 0.2s ease;
+
+    .docs-nav__list--open & {
+      padding: var(--nti-space-1) 0;
+    }
+  }
+
+  &__item {
+    margin: 0;
+  }
+
+  // ── Link ──────────────────────────────────────────────────────
+  &__link {
+    display: block;
+    padding: var(--nti-space-1-5) var(--nti-space-4) var(--nti-space-1-5)
+      var(--nti-space-6);
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--md-sys-color-on-surface-variant);
+    text-decoration: none;
+    border-radius: 0 var(--nti-radius-md) var(--nti-radius-md) 0;
+    margin-right: var(--nti-space-3);
+    transition:
+      background 0.1s,
+      color 0.1s;
+
+    &:hover {
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+    }
+
+    &--active {
+      color: var(--md-sys-color-primary);
+      font-weight: 600;
+      background: color-mix(
+        in srgb,
+        var(--md-sys-color-primary) 10%,
+        transparent
+      );
+
+      &:hover {
+        background: color-mix(
+          in srgb,
+          var(--md-sys-color-primary) 14%,
+          transparent
+        );
+        color: var(--md-sys-color-primary);
+      }
+    }
+  }
+}

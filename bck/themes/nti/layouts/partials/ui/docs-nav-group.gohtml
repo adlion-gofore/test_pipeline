@@ -1,0 +1,17 @@
+<script type="text/x-template" id="docs-nav-group">
+  <div class="docs-nav__group">
+    <button class="docs-nav__group-btn" :class="{ 'docs-nav__group-btn--open': open }"
+            :aria-expanded="String(open)" @click="open = !open">
+      <span class="docs-nav__group-label" v-text="label"></span>
+      <svg class="docs-nav__group-chevron" viewBox="0 0 16 16" fill="none"
+           stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </button>
+    <ul class="docs-nav__list" :class="{ 'docs-nav__list--open': open }">
+      <div class="docs-nav__list-inner">
+        <slot></slot>
+      </div>
+    </ul>
+  </div>
+</script>

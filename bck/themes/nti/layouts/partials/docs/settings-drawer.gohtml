@@ -1,0 +1,40 @@
+{{- $currentVersion := .version -}}
+{{- $currentLang    := .lang -}}
+
+<div class="settings-drawer" id="settings-drawer" aria-hidden="true">
+
+  <div class="settings-drawer__body">
+    {{- with .site.menu.links }}
+    <nav class="settings-drawer__nav">
+      {{- range . }}
+        {{- if eq .type "divider" }}
+          <hr class="settings-drawer__divider">
+        {{- else }}
+          <a class="settings-drawer__link"
+             href="{{ .url }}"
+             {{- if .external }} target="_blank" rel="noopener noreferrer"{{ end }}>
+            {{ .label }}
+          </a>
+        {{- end }}
+      {{- end }}
+    </nav>
+    {{- end }}
+  </div>
+
+  <div class="settings-drawer__footer">
+    <app-dropdown v-if="currentVersion" :items="versionItems" :label="currentVersion" @select="pickVersion"></app-dropdown>
+    <app-dropdown v-if="currentLang" :items="langItems" :label="currentLang" @select="pickLang"></app-dropdown>
+    <app-dropdown class="settings-drawer__theme-picker" :items="themeItems" :label="selectedTheme.label" @select="pick"></app-dropdown>
+    {{ partial "ui/button.gohtml" (dict
+      "icons"  (slice
+        (dict "name" "theme-light" "class" "settings-drawer__theme-icon--light")
+        (dict "name" "theme-dark"  "class" "settings-drawer__theme-icon--dark")
+      )
+      "label"  "Toggle colour scheme"
+      "class"  "btn--icon btn--soft"
+      "@click" "toggle"
+    ) }}
+
+  </div>
+
+</div>

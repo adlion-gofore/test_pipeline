@@ -1,0 +1,31 @@
+@use '../../mixins' as mx;
+
+.docs-shell {
+  display: block;
+  width: 100%;
+}
+
+.docs-row {
+  flex: 1;
+  display: block;
+}
+
+.docs-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.docs-main {
+  padding: var(--nti-space-10) var(--nti-space-4);
+}
+
+@include mx.lg {
+  .docs-row {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .docs-main {
+    padding: var(--nti-space-12) var(--nti-space-8);
+  }
+}

@@ -1,6 +1,6 @@
 {
   "title": "Avant UDS Library",
-  "versionsUrl": "/versions.json",
+  "versionsUrl": "/test_pipeline/versions.json",
   "description": "Universal Design System Library for Rust",
   "defaultLanguage": "en",
   "logo": "/docs/media/svg/logo.svg",

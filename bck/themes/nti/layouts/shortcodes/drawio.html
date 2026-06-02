@@ -1,0 +1,13 @@
+{{- $path    := .Get 0 -}}
+{{- $content := readFile (printf "content/%s" $path) -}}
+{{- $config  := dict
+  "highlight" "#0000ff"
+  "nav"       true
+  "resize"    true
+  "toolbar"   "zoom layers tags lightbox"
+  "xml"       $content
+-}}
+<div class="drawio">
+  {{ printf "<div class=\"mxgraph drawio__graph\" data-mxgraph='%s'></div>" ($config | jsonify) | safeHTML }}
+</div>
+{{- .Page.Store.Set "hasDrawio" true }}

@@ -1,0 +1,10 @@
+.app-root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  min-width: var(--nti-min-width);
+  height: 100%;
+  isolation: isolate;
+  z-index: 0;
+}

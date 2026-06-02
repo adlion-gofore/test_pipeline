@@ -1,0 +1,185 @@
+@use '../../../mixins' as mx;
+
+.search-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: var(--nti-z-50);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+
+  &--open {
+    display: flex;
+  }
+}
+
+.search-modal {
+  width: 90%;
+  max-width: 640px;
+  background: var(--md-sys-color-surface);
+  border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+  border-radius: var(--nti-radius-xl);
+  box-shadow: var(--nti-shadow-lg);
+  overflow: hidden;
+
+  // ── Input bar ─────────────────────────────────────────────────
+  &__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--nti-space-3);
+    padding: var(--nti-space-3) var(--nti-space-4);
+    border-bottom: var(--nti-border) solid var(--md-sys-color-outline-variant);
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+
+  &__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--font-body);
+
+    &::placeholder {
+      color: var(--md-sys-color-on-surface-variant);
+    }
+  }
+
+  &__esc {
+    flex-shrink: 0;
+    font-family: inherit;
+    font-size: 11px;
+    padding: 2px 6px;
+    border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--nti-radius-sm);
+    color: var(--md-sys-color-on-surface-variant);
+    background: var(--md-sys-color-surface-container);
+    cursor: pointer;
+  }
+
+  // ── Filter row ────────────────────────────────────────────────
+  &__filters {
+    display: flex;
+    align-items: center;
+    gap: var(--nti-space-2);
+    padding: var(--nti-space-2) var(--nti-space-4);
+    border-bottom: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    flex-wrap: wrap;
+  }
+
+  &__select {
+    height: 28px;
+    padding: 0 var(--nti-space-2);
+    background: var(--md-sys-color-surface-container);
+    border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--nti-radius-sm);
+    color: var(--md-sys-color-on-surface);
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &:focus {
+      border-color: var(--md-sys-color-primary);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__all-btn {
+    height: 28px;
+    padding: 0 var(--nti-space-3);
+    background: transparent;
+    border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--nti-radius-full);
+    color: var(--md-sys-color-on-surface-variant);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+    &:hover {
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+    }
+
+    &--active {
+      background: color-mix(in srgb, var(--md-sys-color-primary) 12%, transparent);
+      border-color: var(--md-sys-color-primary);
+      color: var(--md-sys-color-primary);
+      font-weight: 600;
+    }
+  }
+
+  // ── Results ────────────────────────────────────────────────────
+  &__results {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: var(--nti-space-2) 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--md-sys-color-outline-variant) transparent;
+  }
+
+  &__result {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nti-space-0-5);
+    padding: var(--nti-space-2-5) var(--nti-space-4);
+    text-decoration: none;
+    color: var(--md-sys-color-on-surface);
+    transition: background 0.1s;
+
+    @include mx.lg {
+      flex-direction: row;
+      align-items: baseline;
+      gap: var(--nti-space-4);
+    }
+
+    &:hover,
+    &:focus {
+      background: var(--md-sys-color-surface-container);
+      outline: none;
+    }
+  }
+
+  &__result-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--md-sys-color-primary);
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    @include mx.lg {
+      width: 10rem;
+    }
+  }
+
+  &__result-desc {
+    font-size: 13px;
+    color: var(--md-sys-color-on-surface-variant);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__no-results {
+    padding: var(--nti-space-4) var(--nti-space-4);
+    font-size: 14px;
+    color: var(--md-sys-color-on-surface-variant);
+  }
+}

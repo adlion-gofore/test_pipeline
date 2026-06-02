@@ -1,0 +1,42 @@
+{{- $site := os.ReadFile "site.yaml" | transform.Unmarshal -}}
+{{- $opts := dict "transpiler" "dartsass" "enableSourceMap" true -}}
+{{- if hugo.IsProduction -}}{{- $opts = dict "transpiler" "dartsass" "enableSourceMap" false "outputStyle" "compressed" -}}{{- end -}}
+{{- $css := resources.Get "docs/scss/404.scss" | css.Sass $opts -}}
+{{- if hugo.IsProduction -}}{{- $css = $css | minify | fingerprint "sha384" -}}{{- end -}}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}"{{ if hugo.IsProduction }} integrity="{{ $css.Data.Integrity }}" crossorigin="anonymous"{{ end }} />
+  <title>404 — Page not found | {{ $site.title }}</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="{{ $site.favicon }}" />
+  <link rel="preload" href="/docs/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin />
+  <script>
+    (function () {
+      var t = localStorage.getItem("nti-theme") || "light";
+      document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar__left">
+      <a class="topbar__logo" href="/">
+        <img src="{{ $site.logo }}" alt="{{ $site.title }}" />
+      </a>
+    </div>
+  </header>
+
+  <div class="not-found">
+    <div class="not-found__code">404</div>
+    <h1 class="not-found__title">Page not found</h1>
+    <p class="not-found__desc">The page you're looking for doesn't exist or has been moved.</p>
+    <a class="not-found__btn" href="/docs/">Go to docs</a>
+  </div>
+
+</body>
+</html>

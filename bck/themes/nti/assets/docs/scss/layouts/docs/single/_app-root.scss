@@ -1,0 +1,25 @@
+.app-root__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: var(--nti-z-overlay);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+
+  &.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+// ── Theme icon swap ───────────────────────────────────────────────────────────
+
+[data-theme="dark"] {
+  .topbar__theme-icon--light,
+  .settings-drawer__theme-icon--light { display: none; }
+
+  .topbar__theme-icon--dark,
+  .settings-drawer__theme-icon--dark  { display: contents; }
+}

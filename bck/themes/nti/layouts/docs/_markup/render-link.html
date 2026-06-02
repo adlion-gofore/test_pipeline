@@ -1,0 +1,89 @@
+{{- $renderHookName := "link" -}}
+{{- $minHugoVersion := "0.114.0" -}}
+{{- if lt hugo.Version $minHugoVersion -}}
+  {{- errorf "The %q render hook requires Hugo v%s or later." $renderHookName $minHugoVersion -}}
+{{- end -}}
+
+{{- $errorLevel := or site.Params.render_hooks.link.errorLevel "ignore" | lower -}}
+
+{{- $contentPath := "" -}}
+{{- with .Page.File }}{{- $contentPath = .Path -}}{{- else }}{{- $contentPath = .Path -}}{{- end -}}
+
+{{- $u := urls.Parse .Destination -}}
+{{- $msg := printf "The %q render hook was unable to resolve the destination %q in %s" $renderHookName $u.String $contentPath -}}
+{{- $attrs := dict "href" $u.String -}}
+
+{{- if $u.IsAbs -}}
+  {{- $attrs = merge $attrs (dict "rel" "external noopener" "target" "_blank") -}}
+{{- else -}}
+  {{- with $u.Path -}}
+    {{- with $p := or ($.Page.GetPage .) ($.Page.GetPage (strings.TrimRight "/" .)) -}}
+      {{- $href := .RelPermalink -}}
+      {{- with $u.RawQuery }}{{- $href = printf "%s?%s" $href . }}{{- end -}}
+      {{- with $u.Fragment -}}
+        {{- $ctx := dict "contentPath" $contentPath "errorLevel" $errorLevel "page" $p "parsedURL" $u "renderHookName" $renderHookName -}}
+        {{- partial "inline/render-link/validate-fragment.gohtml" $ctx -}}
+        {{- $href = printf "%s#%s" $href . -}}
+      {{- end -}}
+      {{- $attrs = dict "href" $href -}}
+    {{- else -}}
+      {{- with $.Page.Resources.Get $u.Path -}}
+        {{- $attrs = dict "href" .RelPermalink -}}
+      {{- else -}}
+        {{- with (and (ne $.Page.BundleType "leaf") ($.Page.CurrentSection.Resources.Get $u.Path)) -}}
+          {{- $attrs = dict "href" .RelPermalink -}}
+        {{- else -}}
+          {{- with resources.Get $u.Path -}}
+            {{- $attrs = dict "href" .RelPermalink -}}
+          {{- else -}}
+            {{- if eq $errorLevel "warning" -}}
+              {{- warnf $msg -}}
+            {{- else if eq $errorLevel "error" -}}
+              {{- errorf $msg -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- else -}}
+    {{- with $u.Fragment -}}
+      {{- $ctx := dict "contentPath" $contentPath "errorLevel" $errorLevel "page" $.Page "parsedURL" $u "renderHookName" $renderHookName -}}
+      {{- partial "inline/render-link/validate-fragment.gohtml" $ctx -}}
+      {{- $attrs = dict "href" (printf "%s#%s" $.Page.RelPermalink .) -}}
+    {{- else -}}
+      {{- if eq $errorLevel "warning" -}}{{- warnf $msg -}}{{- else if eq $errorLevel "error" -}}{{- errorf $msg -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- with .Title -}}{{- $attrs = merge $attrs (dict "title" .) -}}{{- end -}}
+
+<a
+  {{- range $k, $v := $attrs }}
+    {{- printf " %s=%q" $k $v | safeHTMLAttr }}
+  {{- end -}}
+>{{ .Text | safeHTML }}{{- if $u.IsAbs }}<svg class="link__external-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8.75 3a.75.75 0 0 0 0 1.5h2.69L6.22 9.72a.75.75 0 1 0 1.06 1.06l5.22-5.22v2.69a.75.75 0 0 0 1.5 0V3.75A.75.75 0 0 0 13.25 3H8.75Z"/><path d="M2 4.75A2.75 2.75 0 0 1 4.75 2h2a.75.75 0 0 1 0 1.5h-2A1.25 1.25 0 0 0 3.5 4.75v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25v-2a.75.75 0 0 1 1.5 0v2A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5Z"/></svg>{{- end }}</a>
+
+{{- define "partials/inline/render-link/validate-fragment.gohtml" -}}
+  {{- $contentPath    := .contentPath -}}
+  {{- $errorLevel     := .errorLevel -}}
+  {{- $p              := .page -}}
+  {{- $u              := .parsedURL -}}
+  {{- $renderHookName := .renderHookName -}}
+  {{- with $u.Fragment -}}
+    {{- if $p.Fragments.Identifiers.Contains . -}}
+      {{- if gt ($p.Fragments.Identifiers.Count .) 1 -}}
+        {{- $msg := printf "The %q render hook detected duplicate heading IDs %q in %s" $renderHookName . $contentPath -}}
+        {{- if eq $errorLevel "warning" -}}{{- warnf $msg -}}{{- else if eq $errorLevel "error" -}}{{- errorf $msg -}}{{- end -}}
+      {{- end -}}
+    {{- else -}}
+      {{- $targetPath := "" -}}
+      {{- with $p.File }}{{- $targetPath = .Path -}}{{- else }}{{- $targetPath = .Path -}}{{- end -}}
+      {{- $msg := printf "The %q render hook was unable to find heading ID %q in %s. See %s" $renderHookName . $targetPath $contentPath -}}
+      {{- if eq $targetPath $contentPath -}}
+        {{- $msg = printf "The %q render hook was unable to find heading ID %q in %s" $renderHookName . $targetPath -}}
+      {{- end -}}
+      {{- if eq $errorLevel "warning" -}}{{- warnf $msg -}}{{- else if eq $errorLevel "error" -}}{{- errorf $msg -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"><head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>window.__NTI_THEMES__ = [{"dark":false,"default":true,"id":"light","label":"Light"},{"dark":true,"default":false,"id":"dark","label":"Dark"},{"dark":false,"default":false,"id":"light-hc","label":"Light HC"},{"dark":false,"default":false,"id":"light-mc","label":"Light MC"},{"dark":true,"default":true,"id":"dark-hc","label":"Dark HC"},{"dark":true,"default":false,"id":"dark-mc","label":"Dark MC"}];</script>
+  <script>
+    (function () {
+      var stored = localStorage.getItem("nti-themes");
+      var id;
+      if (stored) {
+        try { id = JSON.parse(stored).find(function (t) { return t.selected; })?.id; } catch (_) {}
+      }
+      if (!id) {
+        var isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var themes = window.__NTI_THEMES__ || [];
+        var def = themes.find(function (t) { return t.dark === isDark && t.default; })
+               || themes.find(function (t) { return t.dark === isDark; })
+               || themes.find(function (t) { return !t.dark; })
+               || themes[0];
+        id = def ? def.id : (isDark ? "dark" : "light");
+      }
+      document.documentElement.setAttribute("data-theme", id);
+    })();
+  </script>
+  <style>
+    [v-cloak]{visibility:hidden}
+    .app-loader{display:none}
+    [v-cloak] .app-loader{
+      visibility:visible;
+      display:flex;
+      position:fixed;
+      inset:0;
+      align-items:center;
+      justify-content:center;
+      background:rgb(255 248 246);
+    }
+    [data-theme^="dark"] [v-cloak] .app-loader{background:rgb(26 17 15)}
+    .app-loader__spinner{
+      width:2rem;
+      height:2rem;
+      border-radius:50%;
+      border:2px solid rgba(143,76,56,0.2);
+      border-top-color:rgb(143 76 56);
+      animation:_nti-spin 0.7s linear infinite;
+    }
+    [data-theme^="dark"] .app-loader__spinner{
+      border-color:rgba(255,181,159,0.2);
+      border-top-color:rgb(255 181 159);
+    }
+    @keyframes _nti-spin{to{transform:rotate(360deg)}}
+  </style><link rel="stylesheet" href="/docs/scss/main.min.896fe2bad0fe73729a66e8ecec9062cd16e822fa892ff0107e6698253a772cefa0dbf380a492d20e12942286b9b0a08a.css" integrity="sha384-iW/iutD&#43;c3KaZujs7JBizRboIvqJL/AQfmaYJTp3LO&#43;g2/OApJLSDhKUIoa5sKCK" crossorigin="anonymous" />
+	<link rel="stylesheet" href="/docs/css/theme-light.css" />
+	<link rel="stylesheet" href="/docs/css/theme-dark.css" />
+	<link rel="stylesheet" href="/docs/css/theme-light-hc.css" />
+	<link rel="stylesheet" href="/docs/css/theme-light-mc.css" />
+	<link rel="stylesheet" href="/docs/css/theme-dark-hc.css" />
+	<link rel="stylesheet" href="/docs/css/theme-dark-mc.css" />
+<link rel="stylesheet" href="/docs/css/theme-syntax.css" />
+
+
+
+<title>v1.0.0 | Avant Docs</title>
+	<meta name="description" content="Stable release — complete API reference and usage guides." />
+
+
+<link rel="icon" href="/docs/media/svg/favicon.svg" />
+
+
+<link rel="preload" href="/docs/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin />
+
+</head>
+<body>
+
+    <header class="topbar">
+      <div class="topbar__left">
+        <a href="/docs/" class="topbar__logo" aria-label="Avant Docs"><img src="/docs/media/svg/logo.svg" alt="Avant Docs" /></a>
+      </div>
+    </header>
+
+    <main class="docs-list">
+      <h1 class="docs-list__title">v1.0.0</h1>
+      <hr class="docs-list__sep" />
+      <div class="docs-list__grid"><a href="/docs/v1.0.0/en/" class="docs-list__card">
+            <div class="docs-list__card-header">
+              <svg class="docs-list__card-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+              </svg>
+              <span class="docs-list__card-title"></span></div></a></div>
+    </main>
+
+  </body>
+</html>

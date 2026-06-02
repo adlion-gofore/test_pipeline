@@ -1,0 +1,58 @@
+@use '../../../mixins' as mx;
+
+.app-content {
+  &__docs-nav-panel {
+    position: absolute;
+    inset: 0;
+    padding-top: 3rem;
+    z-index: var(--nti-z-docs-nav-panel);
+    background: var(--md-sys-color-surface-container-low);
+    transform: translateX(-100%);
+    transition: transform 200ms ease;
+
+    &.is-open {
+      transform: translateX(0);
+
+      .app-content__docs-nav-toggle {
+        transform: translateX(0);
+
+        svg {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+
+  &__docs-nav-toggle {
+    position: absolute;
+    top: 0.28rem;
+    right: 0;
+    transform: translateX(100%);
+    transition: transform 200ms ease;
+    z-index: var(--nti-z-docs-nav-toggle);
+
+    svg {
+      transition: transform 200ms ease;
+    }
+  }
+
+  &__body {
+    height: 100%;
+    max-height: 94.5vh;
+    overflow-y: auto;
+    transition: padding-left 200ms ease;
+  }
+}
+
+// ── Breakpoints ───────────────────────────────────────────────────────────────
+
+@include mx.lg {
+  .app-content__docs-nav-panel {
+    inset: 0 auto 0 0;
+    width: 25rem;
+  }
+
+  .app-content__body.is-nav-open {
+    padding-left: 25rem;
+  }
+}

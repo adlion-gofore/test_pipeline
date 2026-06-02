@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Meetings on Avant Docs</title>
+    <link>http://localhost:1313/docs/v1.0.0/en/meetings/</link>
+    <description>Recent content in Meetings on Avant Docs</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 13 May 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/docs/v1.0.0/en/meetings/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Meeting 13 May 2026</title>
+      <link>http://localhost:1313/docs/v1.0.0/en/meetings/meeting_13_05_2026/</link>
+      <pubDate>Wed, 13 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/docs/v1.0.0/en/meetings/meeting_13_05_2026/</guid>
+      <description>&lt;div class=&#34;pdf-embed&#34;&gt;&#xA;  &lt;div class=&#34;pdf-embed__toolbar&#34;&gt;&#xA;    &lt;button class=&#34;pdf-embed__btn&#34;&#xA;            onclick=&#34;document.getElementById(&#39;pdf-modal-9d366b1f24cce5f717ec365f50108e6f&#39;).classList.add(&#39;pdf-embed__modal--open&#39;)&#34;&#xA;            aria-label=&#34;Expand to fullscreen&#34;&gt;&#xA;      &lt;svg viewBox=&#34;0 0 24 24&#34; fill=&#34;currentColor&#34; aria-hidden=&#34;true&#34;&gt;&#xA;        &lt;path d=&#34;M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z&#34;/&gt;&#xA;      &lt;/svg&gt;&#xA;    &lt;/button&gt;&#xA;  &lt;/div&gt;&#xA;  &lt;div id=&#34;pdf-9d366b1f24cce5f717ec365f50108e6f&#34; class=&#34;pdf-embed__viewer&#34;&gt;&lt;/div&gt;&#xA;&lt;/div&gt;&#xA;&#xA;&lt;div id=&#34;pdf-modal-9d366b1f24cce5f717ec365f50108e6f&#34; class=&#34;pdf-embed__modal&#34;&gt;&#xA;  &lt;div class=&#34;pdf-embed__modal-bar&#34;&gt;&#xA;    &lt;button class=&#34;pdf-embed__btn&#34;&#xA;            onclick=&#34;document.getElementById(&#39;pdf-modal-9d366b1f24cce5f717ec365f50108e6f&#39;).classList.remove(&#39;pdf-embed__modal--open&#39;)&#34;&#xA;            aria-label=&#34;Exit fullscreen&#34;&gt;&#xA;      &lt;svg viewBox=&#34;0 0 24 24&#34; fill=&#34;currentColor&#34; aria-hidden=&#34;true&#34;&gt;&#xA;        &lt;path d=&#34;M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z&#34;/&gt;&#xA;      &lt;/svg&gt;&#xA;    &lt;/button&gt;&#xA;  &lt;/div&gt;&#xA;  &lt;div id=&#34;pdf-modal-9d366b1f24cce5f717ec365f50108e6f-inner&#34; class=&#34;pdf-embed__modal-inner&#34;&gt;&lt;/div&gt;&#xA;&lt;/div&gt;&#xA;&#xA;&lt;script&gt;&#xA;window._pdfEmbeds = window._pdfEmbeds || [];&#xA;window._pdfEmbeds.push([&#34;\/docs\/v1.0.0\/en\/meetings\/meeting_13_05_2026.pdf&#34;, &#34;#pdf-9d366b1f24cce5f717ec365f50108e6f&#34;]);&#xA;window._pdfEmbeds.push([&#34;\/docs\/v1.0.0\/en\/meetings\/meeting_13_05_2026.pdf&#34;, &#34;#pdf-modal-9d366b1f24cce5f717ec365f50108e6f-inner&#34;]);&#xA;&lt;/script&gt;</description>
+    </item>
+  </channel>
+</rss>

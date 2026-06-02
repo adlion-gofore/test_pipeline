@@ -1,0 +1,60 @@
+<div class="search-overlay"
+     id="search-overlay"
+     aria-hidden="true"
+     data-version="{{ .version }}"
+     data-lang="{{ .lang }}">
+
+  <div class="search-modal" role="dialog" aria-label="Search documentation">
+
+    <div class="search-modal__bar">
+      <svg class="search-modal__icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <circle cx="8.5" cy="8.5" r="5.5"/>
+        <path stroke-linecap="round" d="M15 15l-3-3"/>
+      </svg>
+      <input type="search"
+             id="flexsearch"
+             class="search-modal__input"
+             placeholder="Search docs…"
+             autocomplete="off"
+             spellcheck="false"
+             aria-label="Search">
+      <kbd class="search-modal__esc">Esc</kbd>
+    </div>
+
+    <div class="search-modal__filters" role="group" aria-label="Search scope">
+      <select class="search-modal__select" id="search-version-select" aria-label="Version"></select>
+      <select class="search-modal__select" id="search-lang-select"    aria-label="Language"></select>
+      <button class="search-modal__all-btn" id="search-all-btn" aria-pressed="false">All</button>
+    </div>
+
+    <div id="suggestions" class="search-modal__results" role="listbox"></div>
+
+  </div>
+</div>
+
+<script src="{{ "js/flexsearch.bundle.js" | relURL }}"></script>
+<script>
+(function () {
+  var idx = new FlexSearch.Document({
+    tokenize: "forward",
+    cache: 100,
+    document: {
+      id: "id",
+      store: ["href", "title", "description"],
+      index: ["title", "description", "content"]
+    }
+  });
+
+  {{ range $i, $p := .page.Site.RegularPages -}}
+  idx.add({
+    id: {{ $i }},
+    href: {{ $p.RelPermalink | jsonify | safeJS }},
+    title: {{ $p.Title | jsonify | safeJS }},
+    description: {{ with $p.Description }}{{ . | jsonify | safeJS }}{{ else }}{{ $p.Summary | htmlUnescape | plainify | jsonify | safeJS }}{{ end }},
+    content: {{ $p.Content | htmlUnescape | plainify | jsonify | safeJS }}
+  });
+  {{ end -}}
+
+  window.__searchIndex = idx;
+})();
+</script>

@@ -1,0 +1,8 @@
+baseURL = "http://localhost:1313/"
+languageCode = "en-us"
+title = "Avant Docs"
+theme = "nti"
+
+[markup.highlight]
+  noClasses = false
+  style     = "github"

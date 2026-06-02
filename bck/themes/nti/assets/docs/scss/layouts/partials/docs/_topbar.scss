@@ -1,0 +1,142 @@
+@use '../../../mixins' as mx;
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--nti-z-50);
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 var(--nti-space-4);
+  gap: var(--nti-space-3);
+  background-color: var(--md-sys-color-surface);
+  border-bottom: var(--nti-border) solid var(--md-sys-color-outline-variant);
+
+  // ── Left ──────────────────────────────────────────────────────
+  &__left {
+    flex-shrink: 0;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    color: var(--md-sys-color-on-surface);
+    text-decoration: none;
+
+    svg,
+    img {
+      height: 36px;
+      width: auto;
+    }
+  }
+
+  &__logo-text {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  // ── Centre ────────────────────────────────────────────────────
+  &__center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__search {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  &__search-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--nti-space-2);
+    width: 100%;
+    height: 36px;
+    padding: 0 var(--nti-space-3);
+    background: var(--md-sys-color-surface-container);
+    border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--nti-radius-full);
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    font-size: 14px;
+    transition: border-color 0.15s, background 0.15s;
+
+    &:hover {
+      border-color: var(--md-sys-color-outline);
+      background: var(--md-sys-color-surface-container-high);
+    }
+  }
+
+  &__search-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  &__search-placeholder {
+    flex: 1;
+    text-align: left;
+  }
+
+  &__search-kbd {
+    font-family: inherit;
+    font-size: 11px;
+    padding: 2px 5px;
+    border: var(--nti-border) solid var(--md-sys-color-outline-variant);
+    border-radius: var(--nti-radius-sm);
+    color: var(--md-sys-color-on-surface-variant);
+    background: var(--md-sys-color-surface);
+  }
+
+  // ── Right ─────────────────────────────────────────────────────
+  &__right {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--nti-space-2);
+  }
+
+  // ── Pickers — hidden on mobile, visible on desktop ────────────
+  &__picker {
+    display: none;
+  }
+
+  // ── Theme toggle — hidden on mobile ───────────────────────────
+  &__theme-btn {
+    display: none;
+  }
+}
+
+// ── Settings hamburger open state ────────────────────────────────────────────
+
+.topbar__settings-btn {
+  svg path {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 200ms ease, opacity 200ms ease, stroke-width 200ms ease;
+  }
+
+  svg path:nth-child(1) { transform: translateY(-0.25rem); }
+  svg path:nth-child(3) { transform: translateY(0.25rem); }
+}
+
+.topbar__settings-btn.is-open {
+  svg path:nth-child(1) { transform: rotate(45deg); stroke-width: 2.4; }
+  svg path:nth-child(2) { opacity: 0; }
+  svg path:nth-child(3) { transform: rotate(-45deg); stroke-width: 2.4; }
+}
+
+// ── Breakpoints ───────────────────────────────────────────────────────────────
+
+@include mx.sm {
+  .topbar__search-placeholder { display: none; }
+  .topbar__search-kbd         { display: none; }
+}
+
+@include mx.lg {
+  .topbar__picker     { display: block; }
+  .topbar__theme-btn  { display: inline-flex; }
+  .topbar__settings-btn { display: none; }
+}
