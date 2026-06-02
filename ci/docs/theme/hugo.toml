@@ -1,8 +1,17 @@
-baseURL = "https://avant-tecno-oy-uds-library.pages.avant-tecno-oy.ghe.com/"
+baseURL = "https://adlion-gofore.github.io/test_pipeline/"
 locale = "en-us"
 title = "Avant UDS Library"
 
 publishDir = "../../../_site"
+
+[outputFormats.VersionManifest]
+  mediaType      = "application/json"
+  baseName       = "new-version"
+  isPlainText    = true
+  notAlternative = true
+
+[outputs]
+  home = ["HTML", "VersionManifest"]
 
 [markup.highlight]
   noClasses = false

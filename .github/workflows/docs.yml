@@ -61,27 +61,6 @@ jobs:
 
       - name: Deploy to gh-pages
         run: |
-          TAG=${{ env.TAG }}
-          ID=$(echo "$TAG" | tr '.' '_')
-
-          # detect languages from the built docs/<tag>/ folder
-          LANGS=$(ls docs/$TAG/)
-
-          # build languages array
-          LANG_JSON=$(python3 -c "
-          import json, sys
-          langs = '$LANGS'.split()
-          items = []
-          for i, code in enumerate(langs):
-              items.append({
-                  'code': code,
-                  'label': code.upper(),
-                  'path': '/docs/$TAG/' + code + '/',
-                  'default': i == 0
-              })
-          print(json.dumps(items))
-          ")
-
           git fetch origin gh-pages 2>/dev/null || true
           if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
             git worktree add /tmp/gh-pages origin/gh-pages
@@ -89,46 +68,35 @@ jobs:
             git worktree add --orphan -b gh-pages /tmp/gh-pages
           fi
 
-          VERSIONS_FILE=/tmp/gh-pages/versions.json
+          python3 - <<'EOF'
+          import json, os
 
-          if [ -f "$VERSIONS_FILE" ]; then
-            NEW=$(python3 -c "
-          import json, sys
-          with open('$VERSIONS_FILE') as f:
-              data = json.load(f)
-          for v in data.get('versions', []):
-              v['latest'] = False
-          data['versions'].insert(0, {
-              'id':        '$ID',
-              'label':     '$TAG',
-              'path':      '/docs/$TAG/',
-              'latest':    True,
-              'languages': $LANG_JSON
-          })
-          print(json.dumps(data, indent=2))
-          ")
-          else
-            NEW=$(python3 -c "
-          import json
-          data = {'versions': [{
-              'id':        '$ID',
-              'label':     '$TAG',
-              'path':      '/docs/$TAG/',
-              'latest':    True,
-              'languages': $LANG_JSON
-          }]}
-          print(json.dumps(data, indent=2))
-          ")
-          fi
+          new_version_path = "_site/new-version.json"
+          versions_file    = "/tmp/gh-pages/versions.json"
 
-          echo "$NEW" > "$VERSIONS_FILE"
+          with open(new_version_path) as f:
+              new_version = json.load(f)
 
-          # copy built site to gh-pages root (Hugo already outputs docs/<tag>/ structure)
+          new_version["latest"] = True
+
+          try:
+              with open(versions_file) as f:
+                  data = json.load(f)
+              for v in data["versions"]:
+                  v["latest"] = False
+              data["versions"].insert(0, new_version)
+          except FileNotFoundError:
+              data = {"versions": [new_version]}
+
+          with open(versions_file, "w") as f:
+              json.dump(data, f, indent=2)
+          EOF
+
           cp -r _site/. /tmp/gh-pages/
 
           cd /tmp/gh-pages
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "docs: deploy $TAG"
+          git commit -m "docs: deploy ${{ env.TAG }}"
           git push origin gh-pages
