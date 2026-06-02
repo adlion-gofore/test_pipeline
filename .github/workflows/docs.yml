@@ -30,6 +30,13 @@ jobs:
           hugo-version: "latest"
           extended: true
 
+      - name: Install Dart Sass
+        run: |
+          DART_SASS_VERSION=1.89.2
+          curl -LO https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz
+          tar -xf dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz
+          echo "$PWD/dart-sass" >> $GITHUB_PATH
+
       - name: Cache Hugo modules
         uses: actions/cache@v4
         with:
