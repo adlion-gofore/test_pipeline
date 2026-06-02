@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Meetings on Avant UDS Library</title><link>https://adlion-gofore.github.io/test_pipeline/docs/v0.0.1/en/meetings/</link><description>Recent content in Meetings on Avant UDS Library</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Wed, 13 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://adlion-gofore.github.io/test_pipeline/docs/v0.0.1/en/meetings/index.xml" rel="self" type="application/rss+xml"/><item><title>Meeting 13 May 2026</title><link>https://adlion-gofore.github.io/test_pipeline/docs/v0.0.1/en/meetings/meeting_13_05_2026/</link><pubDate>Wed, 13 May 2026 00:00:00 +0000</pubDate><guid>https://adlion-gofore.github.io/test_pipeline/docs/v0.0.1/en/meetings/meeting_13_05_2026/</guid><description>&lt;div class="pdf-embed"&gt;
  &lt;div class="pdf-embed__toolbar"&gt;
  &lt;button class="pdf-embed__btn"
- onclick="document.getElementById('pdf-modal-c4b2019f7bbef60f4193d96eff7a02ad').classList.add('pdf-embed__modal--open')"
+ onclick="document.getElementById('pdf-modal-12300de3bc026f0c184eb2c5b2238a4a').classList.add('pdf-embed__modal--open')"
  aria-label="Expand to fullscreen"&gt;
  &lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;
  &lt;path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/&gt;
  &lt;/svg&gt;
  &lt;/button&gt;
  &lt;/div&gt;
- &lt;div id="pdf-c4b2019f7bbef60f4193d96eff7a02ad" class="pdf-embed__viewer"&gt;&lt;/div&gt;
+ &lt;div id="pdf-12300de3bc026f0c184eb2c5b2238a4a" class="pdf-embed__viewer"&gt;&lt;/div&gt;
 &lt;/div&gt;
 
-&lt;div id="pdf-modal-c4b2019f7bbef60f4193d96eff7a02ad" class="pdf-embed__modal"&gt;
+&lt;div id="pdf-modal-12300de3bc026f0c184eb2c5b2238a4a" class="pdf-embed__modal"&gt;
  &lt;div class="pdf-embed__modal-bar"&gt;
  &lt;button class="pdf-embed__btn"
- onclick="document.getElementById('pdf-modal-c4b2019f7bbef60f4193d96eff7a02ad').classList.remove('pdf-embed__modal--open')"
+ onclick="document.getElementById('pdf-modal-12300de3bc026f0c184eb2c5b2238a4a').classList.remove('pdf-embed__modal--open')"
  aria-label="Exit fullscreen"&gt;
  &lt;svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"&gt;
  &lt;path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/&gt;
  &lt;/svg&gt;
  &lt;/button&gt;
  &lt;/div&gt;
- &lt;div id="pdf-modal-c4b2019f7bbef60f4193d96eff7a02ad-inner" class="pdf-embed__modal-inner"&gt;&lt;/div&gt;
+ &lt;div id="pdf-modal-12300de3bc026f0c184eb2c5b2238a4a-inner" class="pdf-embed__modal-inner"&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 &lt;script&gt;
 window._pdfEmbeds = window._pdfEmbeds || [];
-window._pdfEmbeds.push(["\/test_pipeline\/test_pipeline\/docs\/v0.0.1\/en\/meetings\/meeting_13_05_2026.pdf", "#pdf-c4b2019f7bbef60f4193d96eff7a02ad"]);
-window._pdfEmbeds.push(["\/test_pipeline\/test_pipeline\/docs\/v0.0.1\/en\/meetings\/meeting_13_05_2026.pdf", "#pdf-modal-c4b2019f7bbef60f4193d96eff7a02ad-inner"]);
+window._pdfEmbeds.push(["\/test_pipeline\/docs\/v0.0.1\/en\/meetings\/meeting_13_05_2026.pdf", "#pdf-12300de3bc026f0c184eb2c5b2238a4a"]);
+window._pdfEmbeds.push(["\/test_pipeline\/docs\/v0.0.1\/en\/meetings\/meeting_13_05_2026.pdf", "#pdf-modal-12300de3bc026f0c184eb2c5b2238a4a-inner"]);
 &lt;/script&gt;</description></item></channel></rss>
